@@ -1,0 +1,4 @@
+DJPrototype
+===========
+
+android mediaplayer sensor
