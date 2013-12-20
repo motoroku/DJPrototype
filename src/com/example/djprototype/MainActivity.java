@@ -1,8 +1,5 @@
 package com.example.djprototype;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -10,30 +7,22 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioFormat;
 import android.media.AudioManager;
-import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener, Runnable, SensorEventListener {
+public class MainActivity extends Activity implements OnClickListener, SensorEventListener {
 
 	MediaPlayer		mMediaPlayer	= null;
 	SoundPool		mSoundPool		= null;
-	AudioTrack		mAudioTrack		= null;
 	int				spId;
-	int				bufferSize;
-	byte[]			byteData;
-	Thread			playThread;
-	File			file;
 
 	SensorManager	mSensorManager;
 	List<Sensor>	sensors;
@@ -42,18 +31,7 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 	Button			mdStop;
 	Button			mdGo;
 	Button			mdBack;
-
-	Button			spPlay;
-	Button			spStop;
-	Button			spGo;
-	Button			spBack;
-	Button			spTempoUp;
-	Button			spTempoDown;
-
-	Button			atPlay;
-	Button			atStop;
-	Button			atGo;
-	Button			atBack;
+	Button			mDrum;
 
 	TextView		sensorList;
 	TextView		gyroscopeData;
@@ -61,7 +39,7 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 
 	int				totalTime;
 	int				currentTime;
-	static int		MOVE_TIME		= 3000;
+	static int		MOVE_TIME		= 1000;
 	int				tempo			= 0;
 	float			aX;
 	float			aY;
@@ -74,55 +52,21 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 
 		// sensormanager
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		// sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
-		// String str = "実装されているセンサー一覧：\n";
-		// if (sensors != null) {
-		// for (Sensor s : sensors) {
-		// str += s.getName() + "\n";
-		// }
-		// } else {
-		// str += "センサーが存在しません";
-		// }
-
-		// audiotrack用ファイル読み込み
-		file = new File("/sdcard/cm1_001.wav");
-		byteData = new byte[(int) file.length()];
-		FileInputStream in = null;
-		try {
-			in = new FileInputStream(file);
-			in.read(byteData);
-			in.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// audiotrack
-		initialize();
 
 		// mediaplayer
-		mMediaPlayer = MediaPlayer.create(this, R.raw.bgm_maoudamashii_orchestra12);
+		mMediaPlayer = MediaPlayer.create(this, R.raw.bgm_maoudamashii_neorock33);
 		totalTime = mMediaPlayer.getDuration();
 
 		// soundpool
 		mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		spId = mSoundPool.load(this, R.raw.se_maoudamashii_onepoint33, 1);
+		spId = mSoundPool.load(this, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
 
 		// view
 		mdBack = (Button) findViewById(R.id.button1);
 		mdStop = (Button) findViewById(R.id.button2);
 		mdPlay = (Button) findViewById(R.id.button3);
 		mdGo = (Button) findViewById(R.id.button4);
-
-		spBack = (Button) findViewById(R.id.button5);
-		spStop = (Button) findViewById(R.id.button6);
-		spPlay = (Button) findViewById(R.id.button7);
-		spGo = (Button) findViewById(R.id.button8);
-		spTempoUp = (Button) findViewById(R.id.button9);
-		spTempoDown = (Button) findViewById(R.id.button10);
-
-		atStop = (Button) findViewById(R.id.button11);
-		atPlay = (Button) findViewById(R.id.button12);
+		mDrum = (Button) findViewById(R.id.button5);
 
 		// sensorList = (TextView) findViewById(R.id.textView4);
 		// sensorList.setText(str);
@@ -133,17 +77,7 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 		mdStop.setOnClickListener(this);
 		mdPlay.setOnClickListener(this);
 		mdGo.setOnClickListener(this);
-
-		spBack.setOnClickListener(this);
-		spStop.setOnClickListener(this);
-		spPlay.setOnClickListener(this);
-		spGo.setOnClickListener(this);
-		spTempoUp.setOnClickListener(this);
-		spTempoDown.setOnClickListener(this);
-
-		atStop.setOnClickListener(this);
-		atPlay.setOnClickListener(this);
-
+		mDrum.setOnClickListener(this);
 	}
 
 	@Override
@@ -183,7 +117,6 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		int id = v.getId();
-		int streamId = 0;
 
 		switch (id) {
 		// MediaPlayer
@@ -215,64 +148,11 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 			mMediaPlayer.seekTo(currentTime + MainActivity.MOVE_TIME);
 			break;
 		// SoundPool
-		// back
+		// Drum
 		case R.id.button5:
-			break;
-		// stop
-		case R.id.button6:
-			mSoundPool.stop(streamId);
-			break;
-		// play
-		case R.id.button7:
-			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 1.0f);
-			break;
-		// go
-		case R.id.button8:
-			break;
-		// tempoUp
-		case R.id.button9:
-			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 2.0f);
-			break;
-		// tempoDown
-		case R.id.button10:
-			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 0.5f);
-			break;
-		// stop
-		case R.id.button11:
-			if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
-				mAudioTrack.stop();
-				playThread = null;
-				initialize();
-			}
-			break;
-		// play
-		case R.id.button12:
-			playThread.start();
-			break;
-
+			mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 1.0f);
 		default:
 			break;
-		}
-	}
-
-	void initialize() {
-		// 必要となるバッファサイズを計算
-		bufferSize = android.media.AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
-
-		// AudioTrackインスタンス作成
-		mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM);
-
-		// スレッドインスタンス作成
-		playThread = new Thread(this);
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		if (mAudioTrack != null) {
-			// 再生開始
-			mAudioTrack.play();
-			mAudioTrack.write(byteData, 0, byteData.length);
 		}
 	}
 
@@ -286,12 +166,14 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		tempo++;
-		if (tempo == 10) {
+		if (tempo == 5) {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 				if (event.values[SensorManager.DATA_Y] - aY > 1) {
 					currentTime = mMediaPlayer.getCurrentPosition();
 					mMediaPlayer.seekTo(currentTime - MainActivity.MOVE_TIME);
+					aY = event.values[SensorManager.DATA_Y];
 				}
+				tempo = 0;
 			}
 		}
 
@@ -302,7 +184,7 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 				gyroscopeData.setText(str);
 			}
 		}
-		if (tempo == 30) {
+		if (tempo == 20) {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 				String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
 				aX = event.values[SensorManager.DATA_X];
@@ -310,6 +192,9 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 				aZ = event.values[SensorManager.DATA_Z];
 				accelerometerData.setText(str);
 			}
+		}
+
+		if (tempo == 25) {
 			tempo = 0;
 		}
 	}
