@@ -1,6 +1,7 @@
 package com.example.djprototype;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.hardware.Sensor;
@@ -15,35 +16,53 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener, SensorEventListener {
 
-	MediaPlayer		mMediaPlayer	= null;
-	SoundPool		mSoundPool		= null;
-	int				spId;
+	MediaPlayer				mMediaPlayer		= null;
+	SoundPool				mSoundPool			= null;
+	int						spId;
+	int						scratchId;
 
-	SensorManager	mSensorManager;
-	List<Sensor>	sensors;
+	SensorManager			mSensorManager;
+	List<Sensor>			sensors;
 
-	Button			mdPlay;
-	Button			mdStop;
-	Button			mdGo;
-	Button			mdBack;
-	Button			mDrum;
+	Button					mdPlay;
+	Button					mdStop;
+	Button					mdGo;
+	Button					mdBack;
+	Button					mDrum;
+	Button					sensorSwitch;
+	Button					clear;
 
-	TextView		sensorList;
-	TextView		gyroscopeData;
-	TextView		accelerometerData;
+	TextView				sensorList;
+	TextView				gyroscopeData;
+	TextView				accelerometerData;
 
-	int				totalTime;
-	int				currentTime;
-	static int		MOVE_TIME		= 1000;
-	int				tempo			= 0;
-	float			aX;
-	float			aY;
-	float			aZ;
+	ListView				acceleroXList;
+	ListView				acceleroYList;
+	ListView				acceleroZList;
+
+	ArrayAdapter<String>	acceleroXAdapter;
+	ArrayAdapter<String>	acceleroYAdapter;
+	ArrayAdapter<String>	acceleroZAdapter;
+
+	List<String>			acceleroXDataList	= new ArrayList<String>();
+	List<String>			acceleroYDataList	= new ArrayList<String>();
+	List<String>			acceleroZDataList	= new ArrayList<String>();
+
+	int						totalTime;
+	int						currentTime;
+	static int				MOVE_TIME			= 1000;
+	int						tempo				= 0;
+	float					aX;
+	float					aY;
+	float					aZ;
+	boolean					sensorRun			= true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +79,7 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 		// soundpool
 		mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		spId = mSoundPool.load(this, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+		scratchId = mSoundPool.load(this, R.raw.nc30614, 1);
 
 		// view
 		mdBack = (Button) findViewById(R.id.button1);
@@ -67,17 +87,31 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 		mdPlay = (Button) findViewById(R.id.button3);
 		mdGo = (Button) findViewById(R.id.button4);
 		mDrum = (Button) findViewById(R.id.button5);
+		sensorSwitch = (Button) findViewById(R.id.button6);
+		clear = (Button) findViewById(R.id.button7);
 
 		// sensorList = (TextView) findViewById(R.id.textView4);
 		// sensorList.setText(str);
 		gyroscopeData = (TextView) findViewById(R.id.textView5);
 		accelerometerData = (TextView) findViewById(R.id.textView6);
 
+		acceleroXList = (ListView) findViewById(R.id.listView1);
+		acceleroYList = (ListView) findViewById(R.id.listView2);
+		acceleroZList = (ListView) findViewById(R.id.listView3);
+		acceleroXAdapter = new ArrayAdapter<String>(this, R.layout.list_row, acceleroXDataList);
+		acceleroYAdapter = new ArrayAdapter<String>(this, R.layout.list_row, acceleroYDataList);
+		acceleroZAdapter = new ArrayAdapter<String>(this, R.layout.list_row, acceleroZDataList);
+		acceleroXList.setAdapter(acceleroXAdapter);
+		acceleroYList.setAdapter(acceleroYAdapter);
+		acceleroZList.setAdapter(acceleroZAdapter);
+
 		mdBack.setOnClickListener(this);
 		mdStop.setOnClickListener(this);
 		mdPlay.setOnClickListener(this);
 		mdGo.setOnClickListener(this);
 		mDrum.setOnClickListener(this);
+		sensorSwitch.setOnClickListener(this);
+		clear.setOnClickListener(this);
 	}
 
 	@Override
@@ -107,17 +141,9 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		int id = v.getId();
-
 		switch (id) {
 		// MediaPlayer
 		// back
@@ -151,6 +177,14 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 		// Drum
 		case R.id.button5:
 			mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 1.0f);
+			// sensor switch
+		case R.id.button6:
+			sensorRun = !sensorRun;
+			break;
+		case R.id.button7:
+			acceleroXAdapter.clear();
+			acceleroYAdapter.clear();
+			acceleroZAdapter.clear();
 		default:
 			break;
 		}
@@ -159,43 +193,38 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		tempo++;
-		if (tempo == 5) {
+		if (sensorRun) {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-				if (event.values[SensorManager.DATA_Y] - aY > 1) {
+				if (aY - event.values[SensorManager.DATA_Y] > 10) {
 					currentTime = mMediaPlayer.getCurrentPosition();
+					mSoundPool.play(scratchId, 1.0f, 1.0f, 1, 0, 1.0f);
 					mMediaPlayer.seekTo(currentTime - MainActivity.MOVE_TIME);
 					aY = event.values[SensorManager.DATA_Y];
 				}
-				tempo = 0;
 			}
-		}
-
-		if (tempo == 15) {
 			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 				String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
-
 				gyroscopeData.setText(str);
 			}
-		}
-		if (tempo == 20) {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 				String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
 				aX = event.values[SensorManager.DATA_X];
 				aY = event.values[SensorManager.DATA_Y];
 				aZ = event.values[SensorManager.DATA_Z];
 				accelerometerData.setText(str);
+				acceleroXAdapter.add("X軸：" + aX);
+				acceleroYAdapter.add("Y軸：" + aY);
+				acceleroZAdapter.add("Z軸：" + aZ);
+				acceleroXList.setSelection(acceleroXDataList.size());
+				acceleroYList.setSelection(acceleroYDataList.size());
+				acceleroZList.setSelection(acceleroZDataList.size());
 			}
-		}
 
-		if (tempo == 25) {
-			tempo = 0;
 		}
 	}
 }
