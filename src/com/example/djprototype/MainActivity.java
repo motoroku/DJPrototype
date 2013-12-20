@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 
 	int				totalTime;
 	int				currentTime;
-	static int		MOVE_TIME		= 1000;
+	static int		MOVE_TIME		= 3000;
 	int				tempo			= 0;
 	float			aX;
 	float			aY;
@@ -286,18 +286,28 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		tempo++;
+		if (tempo == 10) {
+			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+				if (event.values[SensorManager.DATA_Y] - aY > 1) {
+					currentTime = mMediaPlayer.getCurrentPosition();
+					mMediaPlayer.seekTo(currentTime - MainActivity.MOVE_TIME);
+				}
+			}
+		}
+
 		if (tempo == 15) {
 			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 				String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
-				aX = event.values[SensorManager.DATA_X];
-				aY = event.values[SensorManager.DATA_Y];
-				aZ = event.values[SensorManager.DATA_Z];
+
 				gyroscopeData.setText(str);
 			}
 		}
 		if (tempo == 30) {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 				String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
+				aX = event.values[SensorManager.DATA_X];
+				aY = event.values[SensorManager.DATA_Y];
+				aZ = event.values[SensorManager.DATA_Z];
 				accelerometerData.setText(str);
 			}
 			tempo = 0;
