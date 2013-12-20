@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -17,43 +22,69 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener, Runnable {
+public class MainActivity extends Activity implements OnClickListener, Runnable, SensorEventListener {
 
-	MediaPlayer	mMediaPlayer	= null;
-	SoundPool	mSoundPool		= null;
-	AudioTrack	mAudioTrack		= null;
-	int			spId;
-	int			bufferSize;
-	byte[]		byteData;
-	Thread		playThread;
-	File		file;
+	MediaPlayer		mMediaPlayer	= null;
+	SoundPool		mSoundPool		= null;
+	AudioTrack		mAudioTrack		= null;
+	int				spId;
+	int				bufferSize;
+	byte[]			byteData;
+	Thread			playThread;
+	File			file;
 
-	Button		mdPlay;
-	Button		mdStop;
-	Button		mdGo;
-	Button		mdBack;
+	SensorManager	mSensorManager;
+	List<Sensor>	sensors;
 
-	Button		spPlay;
-	Button		spStop;
-	Button		spGo;
-	Button		spBack;
+	Button			mdPlay;
+	Button			mdStop;
+	Button			mdGo;
+	Button			mdBack;
 
-	Button		atPlay;
-	Button		atStop;
-	Button		atGo;
-	Button		atBack;
+	Button			spPlay;
+	Button			spStop;
+	Button			spGo;
+	Button			spBack;
+	Button			spTempoUp;
+	Button			spTempoDown;
 
-	int			totalTime;
-	int			currentTime;
-	static int	MOVE_TIME		= 1000;
-	double		tempo			= 1;
+	Button			atPlay;
+	Button			atStop;
+	Button			atGo;
+	Button			atBack;
+
+	TextView		sensorList;
+	TextView		gyroscopeData;
+	TextView		accelerometerData;
+
+	int				totalTime;
+	int				currentTime;
+	static int		MOVE_TIME		= 1000;
+	int				tempo			= 0;
+	float			aX;
+	float			aY;
+	float			aZ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// sensormanager
+		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		// sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+		// String str = "実装されているセンサー一覧：\n";
+		// if (sensors != null) {
+		// for (Sensor s : sensors) {
+		// str += s.getName() + "\n";
+		// }
+		// } else {
+		// str += "センサーが存在しません";
+		// }
+
+		// audiotrack用ファイル読み込み
 		file = new File("/sdcard/cm1_001.wav");
 		byteData = new byte[(int) file.length()];
 		FileInputStream in = null;
@@ -66,15 +97,18 @@ public class MainActivity extends Activity implements OnClickListener, Runnable 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		// audiotrack
 		initialize();
 
+		// mediaplayer
 		mMediaPlayer = MediaPlayer.create(this, R.raw.bgm_maoudamashii_orchestra12);
 		totalTime = mMediaPlayer.getDuration();
 
+		// soundpool
 		mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		spId = mSoundPool.load(this, R.raw.se_maoudamashii_onepoint33, 1);
 
+		// view
 		mdBack = (Button) findViewById(R.id.button1);
 		mdStop = (Button) findViewById(R.id.button2);
 		mdPlay = (Button) findViewById(R.id.button3);
@@ -84,9 +118,16 @@ public class MainActivity extends Activity implements OnClickListener, Runnable 
 		spStop = (Button) findViewById(R.id.button6);
 		spPlay = (Button) findViewById(R.id.button7);
 		spGo = (Button) findViewById(R.id.button8);
+		spTempoUp = (Button) findViewById(R.id.button9);
+		spTempoDown = (Button) findViewById(R.id.button10);
 
 		atStop = (Button) findViewById(R.id.button11);
 		atPlay = (Button) findViewById(R.id.button12);
+
+		// sensorList = (TextView) findViewById(R.id.textView4);
+		// sensorList.setText(str);
+		gyroscopeData = (TextView) findViewById(R.id.textView5);
+		accelerometerData = (TextView) findViewById(R.id.textView6);
 
 		mdBack.setOnClickListener(this);
 		mdStop.setOnClickListener(this);
@@ -97,10 +138,38 @@ public class MainActivity extends Activity implements OnClickListener, Runnable 
 		spStop.setOnClickListener(this);
 		spPlay.setOnClickListener(this);
 		spGo.setOnClickListener(this);
+		spTempoUp.setOnClickListener(this);
+		spTempoDown.setOnClickListener(this);
 
 		atStop.setOnClickListener(this);
 		atPlay.setOnClickListener(this);
 
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+		List<Sensor> gyroSensors = mSensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
+		if (gyroSensors.size() > 0) {
+			Sensor sensor = gyroSensors.get(0);
+			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+		}
+		List<Sensor> accelerometers = mSensorManager.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION);
+		if (accelerometers.size() > 0) {
+			Sensor sensor = accelerometers.get(0);
+			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+		}
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+
+		// Listenerの登録解除
+		mSensorManager.unregisterListener(this);
 	}
 
 	@Override
@@ -155,16 +224,18 @@ public class MainActivity extends Activity implements OnClickListener, Runnable 
 			break;
 		// play
 		case R.id.button7:
-			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 2.0f);
+			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 1.0f);
 			break;
 		// go
 		case R.id.button8:
 			break;
 		// tempoUp
 		case R.id.button9:
+			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 2.0f);
 			break;
 		// tempoDown
 		case R.id.button10:
+			streamId = mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 0.5f);
 			break;
 		// stop
 		case R.id.button11:
@@ -205,4 +276,31 @@ public class MainActivity extends Activity implements OnClickListener, Runnable 
 		}
 	}
 
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		// TODO Auto-generated method stub
+		tempo++;
+		if (tempo == 15) {
+			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+				String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
+				aX = event.values[SensorManager.DATA_X];
+				aY = event.values[SensorManager.DATA_Y];
+				aZ = event.values[SensorManager.DATA_Z];
+				gyroscopeData.setText(str);
+			}
+		}
+		if (tempo == 30) {
+			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+				String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
+				accelerometerData.setText(str);
+			}
+			tempo = 0;
+		}
+	}
 }
