@@ -140,9 +140,9 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		case R.id.button4:
 			break;
 		// SoundPool
-		// Drum
+		// hi-hat
 		case R.id.button5:
-			mMusicPlayer.soundDrum();
+			mMusicPlayer.soundHiHat();
 			break;
 		// sensor switch
 		case R.id.button6:

@@ -13,12 +13,14 @@ public class MusicPlayer {
 
 	int			drumId;
 	int			cymbalId;
+	int			hiHatId;
 
 	public MusicPlayer(Context context) {
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_neorock33);
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		drumId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
 		cymbalId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+		hiHatId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
 	}
 
 	public void startMusic() {
@@ -44,5 +46,9 @@ public class MusicPlayer {
 
 	public void soundCymbal() {
 		soundPool.play(cymbalId, 1.5f, 1.5f, 1, 0, 1.0f);
+	}
+
+	public void soundHiHat() {
+		soundPool.play(hiHatId, 2.0f, 2.0f, 1, 0, 1.0f);
 	}
 }
