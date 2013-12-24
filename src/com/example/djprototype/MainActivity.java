@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 
 	MediaPlayer				mMediaPlayer		= null;
 	SoundPool				mSoundPool			= null;
-	int						spId;
+	int						drumId;
 	int						scratchId;
 
 	SensorManager			mSensorManager;
@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 	float					aY;
 	float					aZ;
 	boolean					sensorRun			= true;
+	int						count				= 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 
 		// soundpool
 		mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		spId = mSoundPool.load(this, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+		drumId = mSoundPool.load(this, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
 		scratchId = mSoundPool.load(this, R.raw.nc30614, 1);
 
 		// view
@@ -176,8 +177,9 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 		// SoundPool
 		// Drum
 		case R.id.button5:
-			mSoundPool.play(spId, 1.0f, 1.0f, 1, 0, 1.0f);
-			// sensor switch
+			mSoundPool.play(drumId, 1.0f, 1.0f, 1, 0, 1.0f);
+			break;
+		// sensor switch
 		case R.id.button6:
 			sensorRun = !sensorRun;
 			break;
@@ -198,33 +200,53 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
+
 		if (sensorRun) {
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-				if (aY - event.values[SensorManager.DATA_Y] > 10) {
-					currentTime = mMediaPlayer.getCurrentPosition();
-					mSoundPool.play(scratchId, 1.0f, 1.0f, 1, 0, 1.0f);
-					mMediaPlayer.seekTo(currentTime - MainActivity.MOVE_TIME);
-					aY = event.values[SensorManager.DATA_Y];
+				if (aY - event.values[SensorManager.DATA_Y] > 10 && event.values[SensorManager.DATA_Y] > 10) {
+					switch (count) {
+					case 0:
+						mSoundPool.play(scratchId, 1.0f, 1.0f, 1, 0, 1.0f);
+						count++;
+						break;
+					case 1:
+						mSoundPool.play(drumId, 1.0f, 1.0f, 1, 0, 1.0f);
+						count = 0;
+					default:
+						break;
+					}
+
 				}
-			}
-			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-				String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
-				gyroscopeData.setText(str);
 			}
 			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 				String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
-				aX = event.values[SensorManager.DATA_X];
-				aY = event.values[SensorManager.DATA_Y];
-				aZ = event.values[SensorManager.DATA_Z];
 				accelerometerData.setText(str);
-				acceleroXAdapter.add("X軸：" + aX);
-				acceleroYAdapter.add("Y軸：" + aY);
-				acceleroZAdapter.add("Z軸：" + aZ);
+
+				if (-0.01 > event.values[SensorManager.DATA_X] || event.values[SensorManager.DATA_X] > 0.01) {
+					aX = event.values[SensorManager.DATA_X];
+					acceleroXAdapter.add("X軸：" + aX);
+				}
+
+				if (-0.01 > event.values[SensorManager.DATA_Y] || event.values[SensorManager.DATA_Y] > 0.01) {
+					aY = event.values[SensorManager.DATA_Y];
+					acceleroYAdapter.add("Y軸：" + aY);
+				}
+
+				if (-0.01 > event.values[SensorManager.DATA_Z] || event.values[SensorManager.DATA_Z] > 0.01) {
+					aZ = event.values[SensorManager.DATA_Z];
+					acceleroZAdapter.add("Z軸：" + aZ);
+				}
+
 				acceleroXList.setSelection(acceleroXDataList.size());
 				acceleroYList.setSelection(acceleroYDataList.size());
 				acceleroZList.setSelection(acceleroZDataList.size());
 			}
 
+			// if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+			// String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" +
+			// event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
+			// gyroscopeData.setText(str);
+			// }
 		}
 	}
 }
