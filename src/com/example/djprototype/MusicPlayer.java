@@ -43,6 +43,6 @@ public class MusicPlayer {
 	}
 
 	public void soundCymbal() {
-		soundPool.play(cymbalId, 1.0f, 1.0f, 1, 0, 1.0f);
+		soundPool.play(cymbalId, 1.5f, 1.5f, 1, 0, 1.0f);
 	}
 }

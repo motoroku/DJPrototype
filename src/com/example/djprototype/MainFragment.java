@@ -77,7 +77,6 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-
 		// Listenerの登録
 		List<Sensor> gyroSensors = mSensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
 		if (gyroSensors.size() > 0) {
@@ -95,42 +94,8 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-
 		// Listenerの登録解除
 		mSensorManager.unregisterListener(this);
-	}
-
-	private void createView(View v, Context context) {
-		mdBack = (Button) v.findViewById(R.id.button1);
-		mdStop = (Button) v.findViewById(R.id.button2);
-		mdPlay = (Button) v.findViewById(R.id.button3);
-		mdGo = (Button) v.findViewById(R.id.button4);
-		mDrum = (Button) v.findViewById(R.id.button5);
-		sensorSwitch = (Button) v.findViewById(R.id.button6);
-		clear = (Button) v.findViewById(R.id.button7);
-
-		mdBack.setOnClickListener(this);
-		mdStop.setOnClickListener(this);
-		mdPlay.setOnClickListener(this);
-		mdGo.setOnClickListener(this);
-		mDrum.setOnClickListener(this);
-		sensorSwitch.setOnClickListener(this);
-		clear.setOnClickListener(this);
-
-		// ---------------------------------------------------------------------------
-		// デバッグ用
-		acceleroList = (ListView) v.findViewById(R.id.listView1);
-		acceleroAdapter = new ArrayAdapter<String>(context, R.layout.list_row, acceleroDataList);
-		acceleroList.setAdapter(acceleroAdapter);
-
-		gyroList = (ListView) v.findViewById(R.id.listView4);
-		gyroAdapter = new ArrayAdapter<String>(context, R.layout.list_row, gyroDataList);
-		gyroList.setAdapter(gyroAdapter);
-
-		accelerometerText = (TextView) v.findViewById(R.id.textView6);
-		gyroscopeText = (TextView) v.findViewById(R.id.textView5);
-
-		// ---------------------------------------------------------------------------
 	}
 
 	@Override
@@ -143,13 +108,14 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		if (mMotionHandler.verticallSwing(event, accY)) {
-			mMusicPlayer.soundCymbal();
+				mMusicPlayer.soundCymbal();
+			}
+			if (mMotionHandler.sideSwing(event, gyroZ)) {
+				mMusicPlayer.soundDrum();
+			}
+			reloadData(event);
+			reloadDisplay(event);
 		}
-		if (mMotionHandler.sideSwing(event, gyroZ)) {
-			mMusicPlayer.soundDrum();
-		}
-		reloadData(event);
-		reloadDisplay(event);
 	}
 
 	@Override
@@ -234,5 +200,38 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			gyroAdapter.add("X軸：" + gyroX + "  Y軸：" + gyroY + "  Z軸：" + gyroZ);
 			gyroList.setSelection(gyroDataList.size());
 		}
+	}
+
+	private void createView(View v, Context context) {
+		mdBack = (Button) v.findViewById(R.id.button1);
+		mdStop = (Button) v.findViewById(R.id.button2);
+		mdPlay = (Button) v.findViewById(R.id.button3);
+		mdGo = (Button) v.findViewById(R.id.button4);
+		mDrum = (Button) v.findViewById(R.id.button5);
+		sensorSwitch = (Button) v.findViewById(R.id.button6);
+		clear = (Button) v.findViewById(R.id.button7);
+
+		mdBack.setOnClickListener(this);
+		mdStop.setOnClickListener(this);
+		mdPlay.setOnClickListener(this);
+		mdGo.setOnClickListener(this);
+		mDrum.setOnClickListener(this);
+		sensorSwitch.setOnClickListener(this);
+		clear.setOnClickListener(this);
+
+		// ---------------------------------------------------------------------------
+		// デバッグ用
+		acceleroList = (ListView) v.findViewById(R.id.listView1);
+		acceleroAdapter = new ArrayAdapter<String>(context, R.layout.list_row, acceleroDataList);
+		acceleroList.setAdapter(acceleroAdapter);
+
+		gyroList = (ListView) v.findViewById(R.id.listView4);
+		gyroAdapter = new ArrayAdapter<String>(context, R.layout.list_row, gyroDataList);
+		gyroList.setAdapter(gyroAdapter);
+
+		accelerometerText = (TextView) v.findViewById(R.id.textView6);
+		gyroscopeText = (TextView) v.findViewById(R.id.textView5);
+
+		// ---------------------------------------------------------------------------
 	}
 }
