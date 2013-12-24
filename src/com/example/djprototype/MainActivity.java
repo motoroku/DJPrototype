@@ -123,12 +123,12 @@ public class MainActivity extends Activity implements OnClickListener, SensorEve
 		List<Sensor> gyroSensors = mSensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
 		if (gyroSensors.size() > 0) {
 			Sensor sensor = gyroSensors.get(0);
-			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
 		}
 		List<Sensor> accelerometers = mSensorManager.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION);
 		if (accelerometers.size() > 0) {
 			Sensor sensor = accelerometers.get(0);
-			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
 		}
 	}
 
