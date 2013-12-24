@@ -107,7 +107,8 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (mMotionHandler.verticallSwing(event, accY)) {
+		if (sensorRun) {
+			if (mMotionHandler.frontSlide(event, accZ)) {
 				mMusicPlayer.soundCymbal();
 			}
 			if (mMotionHandler.sideSwing(event, gyroZ)) {
