@@ -3,6 +3,8 @@ package com.example.djprototype;
 import java.util.List;
 import com.example.djprototype.MusicPlayer.Mode;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -37,10 +39,13 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	ImageView				mSound1;
 	ImageView				mSound2;
 	ImageView				mSound3;
+	Drawable				play;
+	Drawable				stop;
 	// Variables
 	ArrayAdapter<String>	adapter;
 	boolean					sensorRun	= true;
 	int						currentTime;
+	Resources				resources;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +56,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		mMusicPlayer = new MusicPlayer(context);
 		mMotionHandler = new MotionHandler();
+		resources = getResources();
 		// ViewÇÃê›íË
 		createView(v);
 		reloadModeView();
@@ -94,10 +100,10 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		case R.id.button_play_stop:
 			if (mMusicPlayer.mediaPlayer.isPlaying()) {
 				mMusicPlayer.stopMusic();
-				mPlay.setText("Play");
+				mPlay.setBackground(play);
 			} else {
 				mMusicPlayer.startMusic();
-				mPlay.setText("Stop");
+				mPlay.setBackground(stop);
 			}
 			break;
 		case R.id.button_back:
@@ -148,6 +154,9 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		mSound1.setOnClickListener(this);
 		mSound2.setOnClickListener(this);
 		mSound3.setOnClickListener(this);
+
+		play = resources.getDrawable(R.drawable.play);
+		stop = resources.getDrawable(R.drawable.stop);
 	}
 
 	private void reloadModeView() {
