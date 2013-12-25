@@ -101,10 +101,14 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 			}
 			break;
 		case R.id.button_back:
+			currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
+			mMusicPlayer.mediaPlayer.seekTo(currentTime - 5000);
 			break;
 		case R.id.button_foward:
+			currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
+			mMusicPlayer.mediaPlayer.seekTo(currentTime + 5000);
 			break;
-		case R.id.textView_sound1:
+		case R.id.imageView_sound1:
 			if (mMusicPlayer.mCurrentMode == Mode.debug) {
 				FragmentManager fm = getFragmentManager();
 				FragmentTransaction ft = fm.beginTransaction();
@@ -113,8 +117,14 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 				ft.addToBackStack(null);
 				ft.commit();
 			} else {
-				mMusicPlayer.soundRhythm();
+				mMusicPlayer.soundRhythmHigh();
 			}
+			break;
+		case R.id.imageView_sound2:
+			mMusicPlayer.soundRhytmMiddle();
+			break;
+		case R.id.imageView_sound3:
+			mMusicPlayer.soundRhythmLow();
 			break;
 		default:
 			break;
