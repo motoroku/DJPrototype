@@ -98,7 +98,7 @@ public class MusicPlayer {
 			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
 			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
 			rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
-			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass14, 1);
+			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
 			break;
 		case dj:
 			swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
