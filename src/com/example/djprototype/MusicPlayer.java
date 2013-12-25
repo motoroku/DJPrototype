@@ -16,6 +16,7 @@ public class MusicPlayer {
 	int			drumId;
 	int			cymbalId;
 	int			hiHatId;
+	int			scratchId;
 
 	enum Mode {
 		rock, dj, debug;
@@ -68,6 +69,10 @@ public class MusicPlayer {
 		soundPool.play(hiHatId, 2.0f, 2.0f, 1, 0, 1.0f);
 	}
 
+	public void soundScratch() {
+		soundPool.play(scratchId, 1.0f, 1.0f, 1, 0, 1.0f);
+	}
+
 	public Mode changeMode() {
 		mCurrentMode = mCurrentMode.getNextMode(mCurrentMode);
 		setSound(mCurrentMode);
@@ -82,6 +87,7 @@ public class MusicPlayer {
 			hiHatId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
 			break;
 		case dj:
+			scratchId = soundPool.load(context, R.raw.nc30614, 1);
 			break;
 		case debug:
 			break;

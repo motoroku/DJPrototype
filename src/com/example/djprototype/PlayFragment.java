@@ -1,7 +1,14 @@
 package com.example.djprototype;
 
+import java.util.List;
+
 import com.example.djprototype.MusicPlayer.Mode;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,30 +22,61 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class PlayFragment extends Fragment implements OnClickListener {
+public class PlayFragment extends Fragment implements OnClickListener, SensorEventListener {
 	// Logic
 	MotionHandler			mMotionHandler;
 	MusicPlayer				mMusicPlayer;
+	// Sensor
+	SensorManager			mSensorManager;
+	List<Sensor>			sensors;
 	// View
 	ImageButton				mModeChange;
-
+	Button					mPlay;
+	Button					mBack;
+	Button					mForward;
 	TextView				mCurrentMode;
 	TextView				mSound1;
-
 	// Variables
 	ArrayAdapter<String>	adapter;
+	boolean					sensorRun	= true;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.fragment_play, container, false);
-
-		mMusicPlayer = new MusicPlayer(getActivity());
+		Context context = getActivity();
+		// ÉCÉìÉXÉ^ÉìÉXê∂ê¨
+		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+		mMusicPlayer = new MusicPlayer(context);
 		mMotionHandler = new MotionHandler();
 		createView(v);
 		reloadModeView();
-
 		return v;
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		// ListenerÇÃìoò^
+		List<Sensor> gyroSensors = mSensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
+		if (gyroSensors.size() > 0) {
+			Sensor sensor = gyroSensors.get(0);
+			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+		}
+		List<Sensor> accelerometers = mSensorManager.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION);
+		if (accelerometers.size() > 0) {
+			Sensor sensor = accelerometers.get(0);
+			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+		}
+	}
+
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		// ListenerÇÃìoò^âèú
+		mSensorManager.unregisterListener(this);
 	}
 
 	@Override
@@ -49,6 +87,19 @@ public class PlayFragment extends Fragment implements OnClickListener {
 		case R.id.button_modeChange:
 			mMusicPlayer.changeMode();
 			reloadModeView();
+			break;
+		case R.id.button_play_stop:
+			if (mMusicPlayer.mediaPlayer.isPlaying()) {
+				mMusicPlayer.stopMusic();
+				mPlay.setText("Play");
+			} else {
+				mMusicPlayer.startMusic();
+				mPlay.setText("Stop");
+			}
+			break;
+		case R.id.button_back:
+			break;
+		case R.id.button_foward:
 			break;
 		case R.id.textView_sound1:
 			if (mMusicPlayer.mCurrentMode == Mode.debug) {
@@ -69,9 +120,16 @@ public class PlayFragment extends Fragment implements OnClickListener {
 
 	private void createView(View v) {
 		mModeChange = (ImageButton) v.findViewById(R.id.button_modeChange);
+		mPlay = (Button) v.findViewById(R.id.button_play_stop);
+		mBack = (Button) v.findViewById(R.id.button_back);
+		mForward = (Button) v.findViewById(R.id.button_foward);
 		mCurrentMode = (TextView) v.findViewById(R.id.textView_currentMode);
 		mSound1 = (TextView) v.findViewById(R.id.textView_sound1);
+
 		mModeChange.setOnClickListener(this);
+		mPlay.setOnClickListener(this);
+		mBack.setOnClickListener(this);
+		mForward.setOnClickListener(this);
 		mSound1.setOnClickListener(this);
 	}
 
@@ -87,6 +145,31 @@ public class PlayFragment extends Fragment implements OnClickListener {
 			mCurrentMode.setText("DEBUG MODE");
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		// TODO Auto-generated method stub
+		if (sensorRun) {
+			if (mMotionHandler.frontSlide(event)) {
+				mMusicPlayer.soundCymbal();
+			}
+			if (mMotionHandler.sideSwing(event)) {
+				mMusicPlayer.soundDrum();
+			}
+			if (mMotionHandler.verticallSlide(event)) {
+				if (mMusicPlayer.mCurrentMode == Mode.dj) {
+					mMusicPlayer.soundScratch();
+				}
+			}
+			mMotionHandler.reloadData(event);
 		}
 	}
 }

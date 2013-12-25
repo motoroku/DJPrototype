@@ -107,10 +107,10 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		if (sensorRun) {
-			if (mMotionHandler.frontSlide(event, accZ)) {
+			if (mMotionHandler.frontSlide(event)) {
 				mMusicPlayer.soundCymbal();
 			}
-			if (mMotionHandler.sideSwing(event, gyroZ)) {
+			if (mMotionHandler.sideSwing(event)) {
 				mMusicPlayer.soundDrum();
 			}
 			reloadData(event);
