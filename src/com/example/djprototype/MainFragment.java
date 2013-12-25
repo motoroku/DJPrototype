@@ -2,7 +2,6 @@ package com.example.djprototype;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

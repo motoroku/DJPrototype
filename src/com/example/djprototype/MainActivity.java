@@ -13,8 +13,8 @@ public class MainActivity extends FragmentActivity {
 
 		FragmentManager fm = getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
-		MainFragment mainFragment = new MainFragment();
-		ft.replace(R.id.LinearLayout2, mainFragment);
+		PlayFragment fragment = new PlayFragment();
+		ft.replace(R.id.LinearLayout2, fragment);
 		ft.commit();
 	}
 }
