@@ -41,9 +41,8 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	float					gyroX;
 	float					gyroY;
 	float					gyroZ;
+	Context					context;
 
-	// ---------------------------------------------------------------------------
-	/* デバッグ用 */
 	// accelerationList
 	ListView				acceleroList;
 	ArrayAdapter<String>	acceleroAdapter;
@@ -56,13 +55,11 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	TextView				gyroscopeText;
 	TextView				accelerometerText;
 
-	// ---------------------------------------------------------------------------
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.fragment_main, container, false);
-		Context context = getActivity();
+		this.context = getActivity();
 
 		// インスタンス生成
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -87,6 +84,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			Sensor sensor = accelerometers.get(0);
 			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
 		}
+		mMusicPlayer = new MusicPlayer(context);
 	}
 
 	@Override
@@ -95,6 +93,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		super.onStop();
 		// Listenerの登録解除
 		mSensorManager.unregisterListener(this);
+		mMusicPlayer = null;
 	}
 
 	@Override
@@ -108,10 +107,10 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		// TODO Auto-generated method stub
 		if (sensorRun) {
 			if (mMotionHandler.frontSlide(event)) {
-				mMusicPlayer.soundCymbal();
+				mMusicPlayer.soundMove();
 			}
 			if (mMotionHandler.sideSwing(event)) {
-				mMusicPlayer.soundDrum();
+				mMusicPlayer.soundSwing();
 			}
 			reloadData(event);
 			reloadDisplay(event);
@@ -141,7 +140,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		// SoundPool
 		// hi-hat
 		case R.id.button5:
-			mMusicPlayer.soundHiHat();
+			mMusicPlayer.soundRhythm();
 			break;
 		// sensor switch
 		case R.id.button6:
@@ -189,7 +188,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			String str1 = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
 			accelerometerText.setText(str1);
 			// リストにセンサーの値を表示
-			acceleroAdapter.add("X軸：" + accX + "  Y軸：" + accY + "  Z軸：" + accZ);
+			acceleroAdapter.add(acceleroDataList.size() + "-X軸：" + accX + "  Y軸：" + accY + "  Z軸：" + accZ);
 			acceleroList.setSelection(acceleroDataList.size());
 		}
 		if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -197,7 +196,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			String str2 = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
 			gyroscopeText.setText(str2);
 			// リストにセンサーの値を表示
-			gyroAdapter.add("X軸：" + gyroX + "  Y軸：" + gyroY + "  Z軸：" + gyroZ);
+			gyroAdapter.add(gyroDataList.size() + "-X軸：" + gyroX + "  Y軸：" + gyroY + "  Z軸：" + gyroZ);
 			gyroList.setSelection(gyroDataList.size());
 		}
 	}
@@ -219,8 +218,6 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		sensorSwitch.setOnClickListener(this);
 		clear.setOnClickListener(this);
 
-		// ---------------------------------------------------------------------------
-		// デバッグ用
 		acceleroList = (ListView) v.findViewById(R.id.listView1);
 		acceleroAdapter = new ArrayAdapter<String>(context, R.layout.list_row, acceleroDataList);
 		acceleroList.setAdapter(acceleroAdapter);
@@ -232,6 +229,5 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		accelerometerText = (TextView) v.findViewById(R.id.textView6);
 		gyroscopeText = (TextView) v.findViewById(R.id.textView5);
 
-		// ---------------------------------------------------------------------------
 	}
 }

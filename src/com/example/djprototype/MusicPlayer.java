@@ -13,20 +13,22 @@ public class MusicPlayer {
 
 	Context		context;
 
-	int			drumId;
-	int			cymbalId;
-	int			hiHatId;
-	int			scratchId;
+	int			swingId;
+	int			moveId;
+	int			rhythmId;
+	int			slideId;
 
 	enum Mode {
-		rock, dj, debug;
+		rock, dj, debug, japan;
 		public Mode getNextMode(Mode mode) {
 			if (mode == Mode.rock) {
 				return Mode.dj;
 			} else if (mode == Mode.dj) {
+				return japan;
+			} else if (mode == Mode.japan) {
 				return debug;
 			} else {
-				return Mode.rock;
+				return rock;
 			}
 		}
 	}
@@ -57,20 +59,20 @@ public class MusicPlayer {
 		}
 	}
 
-	public void soundDrum() {
-		soundPool.play(drumId, 2.0f, 2.0f, 1, 0, 1.0f);
+	public void soundSwing() {
+		soundPool.play(swingId, 2.0f, 2.0f, 1, 0, 1.0f);
 	}
 
-	public void soundCymbal() {
-		soundPool.play(cymbalId, 1.5f, 1.5f, 1, 0, 1.0f);
+	public void soundMove() {
+		soundPool.play(moveId, 1.5f, 1.5f, 1, 0, 1.0f);
 	}
 
-	public void soundHiHat() {
-		soundPool.play(hiHatId, 2.0f, 2.0f, 1, 0, 1.0f);
+	public void soundRhythm() {
+		soundPool.play(rhythmId, 2.0f, 2.0f, 1, 0, 1.0f);
 	}
 
-	public void soundScratch() {
-		soundPool.play(scratchId, 1.0f, 1.0f, 1, 0, 1.0f);
+	public void soundSlide() {
+		soundPool.play(slideId, 1.0f, 1.0f, 1, 0, 1.0f);
 	}
 
 	public Mode changeMode() {
@@ -82,12 +84,19 @@ public class MusicPlayer {
 	private void setSound(Mode mode) {
 		switch (mode) {
 		case rock:
-			drumId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
-			cymbalId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
-			hiHatId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+			swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+			rhythmId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
 			break;
 		case dj:
-			scratchId = soundPool.load(context, R.raw.nc30614, 1);
+			swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
+			slideId = soundPool.load(context, R.raw.nc30614, 1);
+			rhythmId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
+			break;
+		case japan:
+			swingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
+			moveId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
+			rhythmId = soundPool.load(context, R.raw.clappers01, 1);
 			break;
 		case debug:
 			break;

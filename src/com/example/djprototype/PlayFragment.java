@@ -1,9 +1,7 @@
 package com.example.djprototype;
 
 import java.util.List;
-
 import com.example.djprototype.MusicPlayer.Mode;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -49,6 +47,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		mMusicPlayer = new MusicPlayer(context);
 		mMotionHandler = new MotionHandler();
+		// ViewÇÃê›íË
 		createView(v);
 		reloadModeView();
 		return v;
@@ -110,7 +109,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 				ft.addToBackStack(null);
 				ft.commit();
 			} else {
-				mMusicPlayer.soundHiHat();
+				mMusicPlayer.soundRhythm();
 			}
 			break;
 		default:
@@ -141,6 +140,9 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		case dj:
 			mCurrentMode.setText("DJ");
 			break;
+		case japan:
+			mCurrentMode.setText("JAPAN");
+			break;
 		case debug:
 			mCurrentMode.setText("DEBUG MODE");
 		default:
@@ -159,14 +161,14 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		// TODO Auto-generated method stub
 		if (sensorRun) {
 			if (mMotionHandler.frontSlide(event)) {
-				mMusicPlayer.soundCymbal();
+				mMusicPlayer.soundMove();
 			}
 			if (mMotionHandler.sideSwing(event)) {
-				mMusicPlayer.soundDrum();
+				mMusicPlayer.soundSwing();
 			}
 			if (mMotionHandler.verticallSlide(event)) {
 				if (mMusicPlayer.mCurrentMode == Mode.dj) {
-					mMusicPlayer.soundScratch();
+					mMusicPlayer.soundSlide();
 				}
 			}
 			mMotionHandler.reloadData(event);
