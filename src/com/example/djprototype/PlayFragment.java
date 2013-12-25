@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PlayFragment extends Fragment implements OnClickListener, SensorEventListener {
@@ -33,10 +34,13 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	Button					mBack;
 	Button					mForward;
 	TextView				mCurrentMode;
-	TextView				mSound1;
+	ImageView				mSound1;
+	ImageView				mSound2;
+	ImageView				mSound3;
 	// Variables
 	ArrayAdapter<String>	adapter;
 	boolean					sensorRun	= true;
+	int						currentTime;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -123,13 +127,17 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		mBack = (Button) v.findViewById(R.id.button_back);
 		mForward = (Button) v.findViewById(R.id.button_foward);
 		mCurrentMode = (TextView) v.findViewById(R.id.textView_currentMode);
-		mSound1 = (TextView) v.findViewById(R.id.textView_sound1);
+		mSound1 = (ImageView) v.findViewById(R.id.imageView_sound1);
+		mSound2 = (ImageView) v.findViewById(R.id.imageView_sound2);
+		mSound3 = (ImageView) v.findViewById(R.id.imageView_sound3);
 
 		mModeChange.setOnClickListener(this);
 		mPlay.setOnClickListener(this);
 		mBack.setOnClickListener(this);
 		mForward.setOnClickListener(this);
 		mSound1.setOnClickListener(this);
+		mSound2.setOnClickListener(this);
+		mSound3.setOnClickListener(this);
 	}
 
 	private void reloadModeView() {

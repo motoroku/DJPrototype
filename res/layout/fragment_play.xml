@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0D0F0C"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -18,6 +19,7 @@
             android:id="@+id/textView_currentMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#DE2230"
             android:text="CURRENTMODE"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
@@ -27,37 +29,36 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.54" >
 
-        <TextView
-            android:id="@+id/textView_sound1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageView_sound1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="36dp"
-            android:layout_marginTop="38dp"
+            android:layout_marginRight="19dp"
+            android:layout_marginTop="27dp"
             android:clickable="true"
-            android:text="sound1"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:src="@drawable/note1" />
 
-        <TextView
-            android:id="@+id/textView_sound3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="74dp"
-            android:text="sound3"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <ImageView
+            android:id="@+id/imageView_sound2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignRight="@+id/imageView_sound1"
+            android:layout_below="@+id/imageView_sound1"
+            android:layout_marginRight="62dp"
+            android:clickable="true"
+            android:src="@drawable/note1" />
 
-        <TextView
-            android:id="@+id/textView_sound2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView_sound1"
-            android:layout_marginTop="68dp"
-            android:layout_toLeftOf="@+id/textView_sound1"
-            android:text="sound2"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <ImageView
+            android:id="@+id/imageView_sound3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignRight="@+id/imageView_sound1"
+            android:layout_below="@+id/imageView_sound2"
+            android:layout_marginRight="23dp"
+            android:clickable="true"
+            android:src="@drawable/note1" />
 
     </RelativeLayout>
 
@@ -70,18 +71,21 @@
             android:id="@+id/button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#5B5B5D"
             android:text="Back" />
 
         <Button
             android:id="@+id/button_play_stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#5B5B5D"
             android:text="Play" />
 
         <Button
             android:id="@+id/button_foward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#5B5B5D"
             android:text="Forward" />
 
     </LinearLayout>
