@@ -9,18 +9,28 @@ public class MotionHandler {
 	float[]	acceleration	= new float[3];
 	float[]	gyroscope		= new float[3];
 
-	public boolean verticallSlide(SensorEvent event) {
-		if (event.sensor.getType() != Sensor.TYPE_LINEAR_ACCELERATION) {
-			return false;
-		}
-		return event.values[SensorManager.DATA_Y] < -5 && acceleration[1] - event.values[SensorManager.DATA_Y] > 10;
-	}
+	boolean	swinged			= true;
 
 	public boolean sideSwing(SensorEvent event) {
 		if (event.sensor.getType() != Sensor.TYPE_GYROSCOPE) {
 			return false;
 		}
-		return event.values[SensorManager.DATA_Z] - gyroscope[2] < -5;
+		if (event.values[SensorManager.DATA_Z] > 10 && swinged) {
+			swinged = false;
+			return true;
+		}
+		if (gyroscope[2] < 0) {
+			swinged = true;
+		}
+
+		return false;
+	}
+
+	public boolean verticallSlide(SensorEvent event) {
+		if (event.sensor.getType() != Sensor.TYPE_LINEAR_ACCELERATION) {
+			return false;
+		}
+		return event.values[SensorManager.DATA_Y] < -5 && acceleration[1] - event.values[SensorManager.DATA_Y] > 10;
 	}
 
 	public boolean frontSlide(SensorEvent event) {

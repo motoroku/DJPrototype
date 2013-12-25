@@ -2,6 +2,9 @@ package com.example.djprototype;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.djprototype.MusicPlayer.Mode;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -105,6 +108,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		if (sensorRun) {
 			if (mMotionHandler.frontSlide(event)) {
 				mMusicPlayer.soundMove();
@@ -112,6 +116,12 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			if (mMotionHandler.sideSwing(event)) {
 				mMusicPlayer.soundSwing();
 			}
+			if (mMotionHandler.verticallSlide(event)) {
+				if (mMusicPlayer.mCurrentMode == Mode.dj) {
+					mMusicPlayer.soundSlide();
+				}
+			}
+			mMotionHandler.reloadData(event);
 			reloadData(event);
 			reloadDisplay(event);
 		}
@@ -140,7 +150,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		// SoundPool
 		// hi-hat
 		case R.id.button5:
-			mMusicPlayer.soundRhythm();
+			mMusicPlayer.soundRhythmHigh();
 			break;
 		// sensor switch
 		case R.id.button6:
