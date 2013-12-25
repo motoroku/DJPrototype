@@ -11,16 +11,32 @@ public class MusicPlayer {
 	MediaPlayer	mediaPlayer;
 	SoundPool	soundPool;
 
+	Context		context;
+
 	int			drumId;
 	int			cymbalId;
 	int			hiHatId;
 
+	enum Mode {
+		rock, dj, debug;
+		public Mode getNextMode(Mode mode) {
+			if (mode == Mode.rock) {
+				return Mode.dj;
+			} else if (mode == Mode.dj) {
+				return debug;
+			} else {
+				return Mode.rock;
+			}
+		}
+	}
+
+	Mode	mCurrentMode	= Mode.rock;
+
 	public MusicPlayer(Context context) {
+		this.context = context;
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_neorock33);
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		drumId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
-		cymbalId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
-		hiHatId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+		setSound(mCurrentMode);
 	}
 
 	public void startMusic() {
@@ -50,5 +66,27 @@ public class MusicPlayer {
 
 	public void soundHiHat() {
 		soundPool.play(hiHatId, 2.0f, 2.0f, 1, 0, 1.0f);
+	}
+
+	public Mode changeMode() {
+		mCurrentMode = mCurrentMode.getNextMode(mCurrentMode);
+		setSound(mCurrentMode);
+		return mCurrentMode;
+	}
+
+	private void setSound(Mode mode) {
+		switch (mode) {
+		case rock:
+			drumId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+			cymbalId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+			hiHatId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+			break;
+		case dj:
+			break;
+		case debug:
+			break;
+		default:
+			break;
+		}
 	}
 }
