@@ -31,7 +31,6 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	SensorManager			mSensorManager;
 	List<Sensor>			sensors;
 	// View
-	ImageButton				mModeChange;
 	Button					mPlay;
 	Button					mBack;
 	Button					mForward;
@@ -39,8 +38,13 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	ImageView				mSound1;
 	ImageView				mSound2;
 	ImageView				mSound3;
+	// Drawable
 	Drawable				play;
 	Drawable				stop;
+	Drawable				rock;
+	Drawable				dj;
+	Drawable				japan;
+	Drawable				debug;
 	// Variables
 	ArrayAdapter<String>	adapter;
 	boolean					sensorRun	= true;
@@ -93,7 +97,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		// TODO Auto-generated method stub
 		int id = v.getId();
 		switch (id) {
-		case R.id.button_modeChange:
+		case R.id.textView_currentMode:
 			mMusicPlayer.changeMode();
 			reloadModeView();
 			break;
@@ -138,7 +142,6 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	}
 
 	private void createView(View v) {
-		mModeChange = (ImageButton) v.findViewById(R.id.button_modeChange);
 		mPlay = (Button) v.findViewById(R.id.button_play_stop);
 		mBack = (Button) v.findViewById(R.id.button_back);
 		mForward = (Button) v.findViewById(R.id.button_foward);
@@ -147,7 +150,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		mSound2 = (ImageView) v.findViewById(R.id.imageView_sound2);
 		mSound3 = (ImageView) v.findViewById(R.id.imageView_sound3);
 
-		mModeChange.setOnClickListener(this);
+		mCurrentMode.setOnClickListener(this);
 		mPlay.setOnClickListener(this);
 		mBack.setOnClickListener(this);
 		mForward.setOnClickListener(this);
@@ -157,21 +160,25 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 
 		play = resources.getDrawable(R.drawable.play);
 		stop = resources.getDrawable(R.drawable.stop);
+		rock = resources.getDrawable(R.drawable.rock);
+		dj = resources.getDrawable(R.drawable.dj);
+		japan = resources.getDrawable(R.drawable.japan);
+		debug = resources.getDrawable(R.drawable.debug);
 	}
 
 	private void reloadModeView() {
 		switch (mMusicPlayer.mCurrentMode) {
 		case rock:
-			mCurrentMode.setText("ROCK");
+			mCurrentMode.setBackground(rock);
 			break;
 		case dj:
-			mCurrentMode.setText("DJ");
+			mCurrentMode.setBackground(dj);
 			break;
 		case japan:
-			mCurrentMode.setText("JAPAN");
+			mCurrentMode.setBackground(japan);
 			break;
 		case debug:
-			mCurrentMode.setText("DEBUG MODE");
+			mCurrentMode.setBackground(debug);
 		default:
 			break;
 		}
