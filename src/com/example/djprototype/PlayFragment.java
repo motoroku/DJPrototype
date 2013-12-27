@@ -167,18 +167,19 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	}
 
 	private void reloadModeView() {
+		// setBackground()だとAPI 16からなので最小SDKバージョンに対応出来ないので、とりあえずsetBackgroudnDrawable()で対応
 		switch (mMusicPlayer.mCurrentMode) {
 		case rock:
-			mCurrentMode.setBackground(rock);
+			mCurrentMode.setBackgroundDrawable(rock);
 			break;
 		case dj:
-			mCurrentMode.setBackground(dj);
+			mCurrentMode.setBackgroundDrawable(dj);
 			break;
 		case japan:
-			mCurrentMode.setBackground(japan);
+			mCurrentMode.setBackgroundDrawable(japan);
 			break;
 		case debug:
-			mCurrentMode.setBackground(debug);
+			mCurrentMode.setBackgroundDrawable(debug);
 		default:
 			break;
 		}
