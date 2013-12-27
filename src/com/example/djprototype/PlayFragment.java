@@ -131,10 +131,12 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 			}
 			break;
 		case R.id.imageView_sound2:
-			mMusicPlayer.soundRhytmMiddle();
+			// mMusicPlayer.soundRhytmMiddle();
+			mMusicPlayer.startDirection();
 			break;
 		case R.id.imageView_sound3:
-			mMusicPlayer.soundRhythmLow();
+			// mMusicPlayer.soundRhythmLow();
+			mMusicPlayer.stopDirection();
 			break;
 		default:
 			break;

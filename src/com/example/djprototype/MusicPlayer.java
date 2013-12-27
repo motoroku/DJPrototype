@@ -9,6 +9,7 @@ import android.media.SoundPool;
 
 public class MusicPlayer {
 	MediaPlayer	mediaPlayer;
+	MediaPlayer	directMove;
 	SoundPool	soundPool;
 
 	Context		context;
@@ -40,6 +41,7 @@ public class MusicPlayer {
 	public MusicPlayer(Context context) {
 		this.context = context;
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
+		directMove = MediaPlayer.create(context, R.raw.bgm_maoudamashii_cyber07);
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
 	}
@@ -52,6 +54,23 @@ public class MusicPlayer {
 		mediaPlayer.stop();
 		try {
 			mediaPlayer.prepare();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void startDirection() {
+		directMove.start();
+	}
+
+	public void stopDirection() {
+		directMove.stop();
+		try {
+			directMove.prepare();
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
