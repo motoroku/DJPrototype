@@ -60,27 +60,29 @@
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:layout_toLeftOf="@+id/imageView_sound3"
+            android:layout_below="@+id/imageView2"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="15dp"
             android:src="@drawable/device" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/imageView3"
-            android:layout_marginBottom="15dp"
-            android:layout_toLeftOf="@+id/imageView_sound2"
+            android:layout_alignLeft="@+id/imageView1"
+            android:layout_below="@+id/imageView1"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/youre" />
 
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/imageView_sound3"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="20dp"
+            android:layout_alignTop="@+id/imageView_sound3"
+            android:layout_marginLeft="22dp"
             android:src="@drawable/shake" />
 
     </RelativeLayout>
