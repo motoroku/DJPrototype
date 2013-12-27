@@ -104,10 +104,10 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		case R.id.button_play_stop:
 			if (mMusicPlayer.mediaPlayer.isPlaying()) {
 				mMusicPlayer.stopMusic();
-				mPlay.setBackground(play);
+				mPlay.setBackgroundDrawable(play);
 			} else {
 				mMusicPlayer.startMusic();
-				mPlay.setBackground(stop);
+				mPlay.setBackgroundDrawable(stop);
 			}
 			break;
 		case R.id.button_back:
