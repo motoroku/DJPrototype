@@ -74,15 +74,15 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 
 		// sensormanager
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		// sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
-		// String str = "実装されているセンサー一覧：\n";
-		// if (sensors != null) {
-		// for (Sensor s : sensors) {
-		// str += s.getName() + "\n";
-		// }
-		// } else {
-		// str += "センサーが存在しません";
-		// }
+		sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+		String str = "実装されているセンサー一覧：\n";
+		if (sensors != null) {
+			for (Sensor s : sensors) {
+				str += s.getName() + "\n";
+			}
+		} else {
+			str += "センサーが存在しません";
+		}
 
 		// audiotrack用ファイル読み込み
 		file = new File("/sdcard/cm1_001.wav");
@@ -124,8 +124,8 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 		atStop = (Button) findViewById(R.id.button11);
 		atPlay = (Button) findViewById(R.id.button12);
 
-		// sensorList = (TextView) findViewById(R.id.textView4);
-		// sensorList.setText(str);
+		sensorList = (TextView) findViewById(R.id.textView4);
+		sensorList.setText(str);
 		gyroscopeData = (TextView) findViewById(R.id.textView5);
 		accelerometerData = (TextView) findViewById(R.id.textView6);
 
@@ -151,16 +151,16 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 		// TODO Auto-generated method stub
 		super.onResume();
 
-		List<Sensor> gyroSensors = mSensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
-		if (gyroSensors.size() > 0) {
-			Sensor sensor = gyroSensors.get(0);
-			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
-		}
-		List<Sensor> accelerometers = mSensorManager.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION);
-		if (accelerometers.size() > 0) {
-			Sensor sensor = accelerometers.get(0);
-			mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
-		}
+		// List<Sensor> gyroSensors = mSensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
+		// if (gyroSensors.size() > 0) {
+		// Sensor sensor = gyroSensors.get(0);
+		// mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+		// }
+		// List<Sensor> accelerometers = mSensorManager.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION);
+		// if (accelerometers.size() > 0) {
+		// Sensor sensor = accelerometers.get(0);
+		// mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+		// }
 	}
 
 	@Override
@@ -285,22 +285,24 @@ public class MainActivity extends Activity implements OnClickListener, Runnable,
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		tempo++;
-		if (tempo == 15) {
-			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-				String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
-				aX = event.values[SensorManager.DATA_X];
-				aY = event.values[SensorManager.DATA_Y];
-				aZ = event.values[SensorManager.DATA_Z];
-				gyroscopeData.setText(str);
-			}
-		}
-		if (tempo == 30) {
-			if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-				String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
-				accelerometerData.setText(str);
-			}
-			tempo = 0;
-		}
+		// tempo++;
+		// if (tempo == 15) {
+		// if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+		// String str = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" +
+		// event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
+		// aX = event.values[SensorManager.DATA_X];
+		// aY = event.values[SensorManager.DATA_Y];
+		// aZ = event.values[SensorManager.DATA_Z];
+		// gyroscopeData.setText(str);
+		// }
+		// }
+		// if (tempo == 30) {
+		// if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+		// String str = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" +
+		// event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
+		// accelerometerData.setText(str);
+		// }
+		// tempo = 0;
+		// }
 	}
 }
