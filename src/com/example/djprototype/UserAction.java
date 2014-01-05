@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAction {
-	int actionCount;
 	boolean isUserTurn;
 	List<Move> userActionHistory = new ArrayList<Move>();
 	List<Move> correctActionList = new ArrayList<Move>();
@@ -14,23 +13,16 @@ public class UserAction {
 	}
 
 	public void reset() {
-		actionCount = 0;
 		userActionHistory = new ArrayList<Move>();
-		correctActionList = new ArrayList<Move>();
 	}
 
 	public void changeUserTurn() {
 		isUserTurn = !isUserTurn;
 	}
 
-	public void addCount() {
-		actionCount++;
-	}
-
 	public void addUserAction(Move move) {
 		if (isUserTurn) {
 			userActionHistory.add(move);
-			addCount();
 		}
 	}
 
@@ -40,8 +32,9 @@ public class UserAction {
 
 	public boolean isFinishedUserAction() {
 		if (isUserTurn) {
-			int num = correctActionList.size();
-			return actionCount >= num;
+			int correctSize = correctActionList.size();
+			int userActionSize = userActionHistory.size();
+			return userActionSize >= correctSize;
 		} else {
 			return false;
 		}

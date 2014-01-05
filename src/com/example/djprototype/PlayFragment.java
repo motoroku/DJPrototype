@@ -220,17 +220,18 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 			if (mMotionHandler.verticallSlide(event)) {
 				if (mMusicPlayer.mCurrentMode == Mode.dj) {
 					mMusicPlayer.soundSlide();
+					mUserAction.addUserAction(Move.verticalSlide);
 				}
-				mUserAction.addUserAction(Move.verticalSlide);
 			}
 			mMotionHandler.reloadData(event);
 
-			if (mUserAction.isFinishedUserAction()) {
+			if (mUserAction.isUserTurn && mUserAction.isFinishedUserAction()) {
 				if (mUserAction.isCorrectUserAction()) {
 					mMusicPlayer.soundCorrect();
 				} else {
 					mMusicPlayer.soundIncorrect();
 				}
+				mUserAction.reset();
 			}
 		}
 	}
