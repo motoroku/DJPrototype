@@ -19,6 +19,10 @@ public class UserAction {
 		correctActionList = new ArrayList<Move>();
 	}
 
+	public void changeUserTurn() {
+		isUserTurn = !isUserTurn;
+	}
+
 	public void addCount() {
 		actionCount++;
 	}
