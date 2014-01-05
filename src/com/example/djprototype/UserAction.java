@@ -28,8 +28,10 @@ public class UserAction {
 	}
 
 	public void addUserAction(Move move) {
-		userActionHistory.add(move);
-		addCount();
+		if (isUserTurn) {
+			userActionHistory.add(move);
+			addCount();
+		}
 	}
 
 	public void addCorrectAction(Move move) {
@@ -37,8 +39,13 @@ public class UserAction {
 	}
 
 	public boolean isFinishedUserAction() {
-		int num = correctActionList.size();
-		return actionCount >= num;
+		if (isUserTurn) {
+			int num = correctActionList.size();
+			return actionCount >= num;
+		} else {
+			return false;
+		}
+
 	}
 
 	public boolean isCorrectUserAction() {
