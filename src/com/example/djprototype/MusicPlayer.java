@@ -11,6 +11,7 @@ public class MusicPlayer {
 	MediaPlayer mediaPlayer;
 	MediaPlayer directMove;
 	SoundPool soundPool;
+	SoundPool gameSound;
 
 	Context context;
 
@@ -45,7 +46,8 @@ public class MusicPlayer {
 		this.context = context;
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
 		directMove = MediaPlayer.create(context, R.raw.bgm_maoudamashii_cyber07);
-		soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		gameSound = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
 	}
 
@@ -108,11 +110,11 @@ public class MusicPlayer {
 	}
 
 	public void soundCorrect() {
-		soundPool.play(correctId, 1.0f, 1.0f, 1, 0, 1.0f);
+		gameSound.play(correctId, 1.0f, 1.0f, 1, 0, 1.0f);
 	}
 
 	public void soundIncorrect() {
-		soundPool.play(incorrectId, 1.0f, 1.0f, 1, 0, 1.0f);
+		gameSound.play(incorrectId, 1.0f, 1.0f, 1, 0, 1.0f);
 	}
 
 	public Mode changeMode() {
@@ -145,7 +147,7 @@ public class MusicPlayer {
 			default:
 				break;
 		}
-		correctId = soundPool.load(context, R.raw.se_maoudamashii_onepoint15_maru, 1);
-		incorrectId = soundPool.load(context, R.raw.se_maoudamashii_onepoint14_batu, 1);
+		correctId = gameSound.load(context, R.raw.se_maoudamashii_onepoint15_maru, 1);
+		incorrectId = gameSound.load(context, R.raw.se_maoudamashii_onepoint14_batu, 1);
 	}
 }
