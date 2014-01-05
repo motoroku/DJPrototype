@@ -25,6 +25,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	// Logic
 	MotionHandler			mMotionHandler;
 	MusicPlayer				mMusicPlayer;
+	UserAction 				mUserAction;
 	// Sensor
 	SensorManager			mSensorManager;
 	List<Sensor>			sensors;
@@ -68,6 +69,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		mMusicPlayer = new MusicPlayer(context);
 		mMotionHandler = new MotionHandler();
+		mUserAction = new UserAction();
 		createView(v, context);
 		return v;
 	}
