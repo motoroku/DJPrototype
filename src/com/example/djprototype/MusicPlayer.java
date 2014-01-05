@@ -45,7 +45,7 @@ public class MusicPlayer {
 	public MusicPlayer(Context context) {
 		this.context = context;
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
-		directMove = MediaPlayer.create(context, R.raw.bgm_maoudamashii_cyber07);
+		directMove = MediaPlayer.create(context, R.raw.lesson1);
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		gameSound = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
