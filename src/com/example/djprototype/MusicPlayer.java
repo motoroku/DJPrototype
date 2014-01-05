@@ -8,18 +8,21 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 public class MusicPlayer {
-	MediaPlayer	mediaPlayer;
-	MediaPlayer	directMove;
-	SoundPool	soundPool;
+	MediaPlayer mediaPlayer;
+	MediaPlayer directMove;
+	SoundPool soundPool;
 
-	Context		context;
+	Context context;
 
-	int			swingId;
-	int			moveId;
-	int			slideId;
-	int			rhythmHighId;
-	int			rhythmMiddleId;
-	int			rhythmLowId;
+	int swingId;
+	int moveId;
+	int slideId;
+	int rhythmHighId;
+	int rhythmMiddleId;
+	int rhythmLowId;
+
+	int correctId;
+	int incorrectId;
 
 	enum Mode {
 		rock, dj, debug, japan;
@@ -36,13 +39,13 @@ public class MusicPlayer {
 		}
 	}
 
-	Mode	mCurrentMode	= Mode.rock;
+	Mode mCurrentMode = Mode.rock;
 
 	public MusicPlayer(Context context) {
 		this.context = context;
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
 		directMove = MediaPlayer.create(context, R.raw.bgm_maoudamashii_cyber07);
-		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
 	}
 
@@ -104,6 +107,14 @@ public class MusicPlayer {
 		soundPool.play(slideId, 1.0f, 1.0f, 1, 0, 1.0f);
 	}
 
+	public void soundCorrect() {
+		soundPool.play(correctId, 1.0f, 1.0f, 1, 0, 1.0f);
+	}
+
+	public void soundIncorrect() {
+		soundPool.play(incorrectId, 1.0f, 1.0f, 1, 0, 1.0f);
+	}
+
 	public Mode changeMode() {
 		mCurrentMode = mCurrentMode.getNextMode(mCurrentMode);
 		setSound(mCurrentMode);
@@ -112,27 +123,29 @@ public class MusicPlayer {
 
 	private void setSound(Mode mode) {
 		switch (mode) {
-		case rock:
-			swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
-			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
-			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
-			rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
-			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
-			break;
-		case dj:
-			swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
-			slideId = soundPool.load(context, R.raw.nc30614, 1);
-			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
-			break;
-		case japan:
-			swingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
-			moveId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
-			rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
-			break;
-		case debug:
-			break;
-		default:
-			break;
+			case rock:
+				swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+				moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+				rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+				rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+				rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+				break;
+			case dj:
+				swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
+				slideId = soundPool.load(context, R.raw.nc30614, 1);
+				rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
+				break;
+			case japan:
+				swingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
+				moveId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
+				rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
+				break;
+			case debug:
+				break;
+			default:
+				break;
 		}
+		correctId = soundPool.load(context, R.raw.se_maoudamashii_onepoint15_maru, 1);
+		incorrectId = soundPool.load(context, R.raw.se_maoudamashii_onepoint14_batu, 1);
 	}
 }
