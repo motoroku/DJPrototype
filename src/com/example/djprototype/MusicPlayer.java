@@ -5,9 +5,10 @@ import java.io.IOException;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.SoundPool;
 
-public class MusicPlayer {
+public class MusicPlayer implements OnCompletionListener {
 	MediaPlayer mediaPlayer;
 	MediaPlayer directMove;
 	SoundPool soundPool;
@@ -49,6 +50,9 @@ public class MusicPlayer {
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		gameSound = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
+
+		mediaPlayer.setOnCompletionListener(this);
+		directMove.setOnCompletionListener(this);
 	}
 
 	public void startMusic() {
@@ -149,5 +153,10 @@ public class MusicPlayer {
 		}
 		correctId = gameSound.load(context, R.raw.se_maoudamashii_onepoint15_maru, 1);
 		incorrectId = gameSound.load(context, R.raw.se_maoudamashii_onepoint14_batu, 1);
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		// TODO Auto-generated method stub
 	}
 }

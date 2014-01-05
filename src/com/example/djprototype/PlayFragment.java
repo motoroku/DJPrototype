@@ -3,7 +3,6 @@ package com.example.djprototype;
 import java.util.List;
 import com.example.djprototype.MusicPlayer.Mode;
 import com.example.djprototype.UserAction.Move;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -143,7 +142,8 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 			case R.id.imageView_sound2:
 				// mMusicPlayer.soundRhytmMiddle();
 				// mMusicPlayer.startDirection();
-				mUserAction.changeUserTurn();
+				mMusicPlayer.startDirection();
+				mUserAction.isUserTurn = true;
 				break;
 			case R.id.imageView_sound3:
 				// mMusicPlayer.soundRhythmLow();
