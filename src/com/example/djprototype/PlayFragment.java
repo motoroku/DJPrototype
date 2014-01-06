@@ -203,7 +203,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		if (mMusicPlayer.mCurrentMode == Mode.game && mUserAction.isFinishedUserAction()) {
 			if (mUserAction.isCorrectUserAction()) {
 				mMusicPlayer.soundCorrect();
-				mUserAction.changeUserTurn();
+				mUserAction.isUserTurn = false;
 			} else {
 				mMusicPlayer.soundIncorrect();
 			}
@@ -258,6 +258,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		default:
 			break;
 		}
+		mUserAction.isUserTurn = false;
 	}
 
 }
