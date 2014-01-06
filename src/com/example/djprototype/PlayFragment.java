@@ -26,32 +26,33 @@ import android.widget.TextView;
 
 public class PlayFragment extends Fragment implements OnClickListener, SensorEventListener {
 	// Logic
-	MotionHandler mMotionHandler;
-	MusicPlayer mMusicPlayer;
-	UserAction mUserAction;
+	MotionHandler			mMotionHandler;
+	MusicPlayer				mMusicPlayer;
+	UserAction				mUserAction;
 	// Sensor
-	SensorManager mSensorManager;
-	List<Sensor> sensors;
+	SensorManager			mSensorManager;
+	List<Sensor>			sensors;
 	// View
-	Button mPlay;
-	Button mBack;
-	Button mForward;
-	TextView mCurrentMode;
-	ImageView mSound1;
-	ImageView mSound2;
-	ImageView mSound3;
+	Button					mPlay;
+	Button					mBack;
+	Button					mForward;
+	TextView				mCurrentMode;
+	ImageView				mSound1;
+	ImageView				mSound2;
+	ImageView				mSound3;
 	// Drawable
-	Drawable play;
-	Drawable stop;
-	Drawable rock;
-	Drawable dj;
-	Drawable japan;
-	Drawable debug;
+	Drawable				play;
+	Drawable				stop;
+	Drawable				rock;
+	Drawable				dj;
+	Drawable				japan;
+	Drawable				game;
+	Drawable				debug;
 	// Variables
-	ArrayAdapter<String> adapter;
-	boolean sensorRun = true;
-	int currentTime;
-	Resources resources;
+	ArrayAdapter<String>	adapter;
+	boolean					sensorRun	= true;
+	int						currentTime;
+	Resources				resources;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,11 +107,21 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		// TODO Auto-generated method stub
 		int id = v.getId();
 		switch (id) {
-			case R.id.textView_currentMode:
-				mMusicPlayer.changeMode();
-				reloadModeView();
-				break;
-			case R.id.button_play_stop:
+		case R.id.textView_currentMode:
+			mMusicPlayer.changeMode();
+			reloadModeView();
+			break;
+		case R.id.button_play_stop:
+			if (mMusicPlayer.mCurrentMode == Mode.game) {
+				if (mMusicPlayer.directMove.isPlaying()) {
+					mMusicPlayer.stopDirection();
+					mPlay.setBackgroundDrawable(play);
+				} else {
+					mMusicPlayer.startDirection();
+					mUserAction.isUserTurn = true;
+					mPlay.setBackgroundDrawable(stop);
+				}
+			} else {
 				if (mMusicPlayer.mediaPlayer.isPlaying()) {
 					mMusicPlayer.stopMusic();
 					mPlay.setBackgroundDrawable(play);
@@ -118,84 +129,42 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 					mMusicPlayer.startMusic();
 					mPlay.setBackgroundDrawable(stop);
 				}
-				break;
-			case R.id.button_back:
-				currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
-				mMusicPlayer.mediaPlayer.seekTo(currentTime - 5000);
-				break;
-			case R.id.button_foward:
-				currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
-				mMusicPlayer.mediaPlayer.seekTo(currentTime + 5000);
-				break;
-			case R.id.imageView_sound1:
-				if (mMusicPlayer.mCurrentMode == Mode.debug) {
-					FragmentManager fm = getFragmentManager();
-					FragmentTransaction ft = fm.beginTransaction();
-					MainFragment fragment = new MainFragment();
-					ft.replace(R.id.LinearLayout2, fragment);
-					ft.addToBackStack(null);
-					ft.commit();
-				} else {
-					mMusicPlayer.soundRhythmHigh();
-				}
-				break;
-			case R.id.imageView_sound2:
-				// mMusicPlayer.soundRhytmMiddle();
-				// mMusicPlayer.startDirection();
-				mMusicPlayer.startDirection();
-				mUserAction.isUserTurn = true;
-				break;
-			case R.id.imageView_sound3:
-				// mMusicPlayer.soundRhythmLow();
-				// mMusicPlayer.stopDirection();
-				break;
-			default:
-				break;
-		}
-	}
-
-	private void createView(View v) {
-		mPlay = (Button) v.findViewById(R.id.button_play_stop);
-		mBack = (Button) v.findViewById(R.id.button_back);
-		mForward = (Button) v.findViewById(R.id.button_foward);
-		mCurrentMode = (TextView) v.findViewById(R.id.textView_currentMode);
-		mSound1 = (ImageView) v.findViewById(R.id.imageView_sound1);
-		mSound2 = (ImageView) v.findViewById(R.id.imageView_sound2);
-		mSound3 = (ImageView) v.findViewById(R.id.imageView_sound3);
-
-		mCurrentMode.setOnClickListener(this);
-		mPlay.setOnClickListener(this);
-		mBack.setOnClickListener(this);
-		mForward.setOnClickListener(this);
-		mSound1.setOnClickListener(this);
-		mSound2.setOnClickListener(this);
-		mSound3.setOnClickListener(this);
-
-		play = resources.getDrawable(R.drawable.play);
-		stop = resources.getDrawable(R.drawable.stop);
-		rock = resources.getDrawable(R.drawable.rock);
-		dj = resources.getDrawable(R.drawable.dj);
-		japan = resources.getDrawable(R.drawable.japan);
-		debug = resources.getDrawable(R.drawable.debug);
-	}
-
-	private void reloadModeView() {
-		// setBackground()だとAPI
-		// 16からなので最小SDKバージョンに対応出来ないので、とりあえずsetBackgroudnDrawable()で対応
-		switch (mMusicPlayer.mCurrentMode) {
-			case rock:
-				mCurrentMode.setBackgroundDrawable(rock);
-				break;
-			case dj:
-				mCurrentMode.setBackgroundDrawable(dj);
-				break;
-			case japan:
-				mCurrentMode.setBackgroundDrawable(japan);
-				break;
-			case debug:
-				mCurrentMode.setBackgroundDrawable(debug);
-			default:
-				break;
+			}
+			break;
+		case R.id.button_back:
+			currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
+			mMusicPlayer.mediaPlayer.seekTo(currentTime - 5000);
+			break;
+		case R.id.button_foward:
+			currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
+			mMusicPlayer.mediaPlayer.seekTo(currentTime + 5000);
+			break;
+		case R.id.imageView_sound1:
+			if (mMusicPlayer.mCurrentMode == Mode.debug) {
+				FragmentManager fm = getFragmentManager();
+				FragmentTransaction ft = fm.beginTransaction();
+				MainFragment fragment = new MainFragment();
+				ft.replace(R.id.LinearLayout2, fragment);
+				ft.addToBackStack(null);
+				ft.commit();
+			} else {
+				mMusicPlayer.soundRhythmHigh();
+			}
+			mUserAction.addUserAction(Move.highTap);
+			isClear();
+			break;
+		case R.id.imageView_sound2:
+			mMusicPlayer.soundRhytmMiddle();
+			mUserAction.addUserAction(Move.middleTap);
+			isClear();
+			break;
+		case R.id.imageView_sound3:
+			mMusicPlayer.soundRhythmLow();
+			mUserAction.addUserAction(Move.lowTap);
+			isClear();
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -224,15 +193,69 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 				}
 			}
 			mMotionHandler.reloadData(event);
-
-			if (mUserAction.isUserTurn && mUserAction.isFinishedUserAction()) {
-				if (mUserAction.isCorrectUserAction()) {
-					mMusicPlayer.soundCorrect();
-				} else {
-					mMusicPlayer.soundIncorrect();
-				}
-				mUserAction.reset();
-			}
+			isClear();
 		}
 	}
+
+	private void isClear() {
+		if (mMusicPlayer.mCurrentMode == Mode.game && mUserAction.isFinishedUserAction()) {
+			if (mUserAction.isCorrectUserAction()) {
+				mMusicPlayer.soundCorrect();
+				mUserAction.changeUserTurn();
+			} else {
+				mMusicPlayer.soundIncorrect();
+			}
+			mUserAction.reset();
+		}
+	}
+
+	private void createView(View v) {
+		mPlay = (Button) v.findViewById(R.id.button_play_stop);
+		mBack = (Button) v.findViewById(R.id.button_back);
+		mForward = (Button) v.findViewById(R.id.button_foward);
+		mCurrentMode = (TextView) v.findViewById(R.id.textView_currentMode);
+		mSound1 = (ImageView) v.findViewById(R.id.imageView_sound1);
+		mSound2 = (ImageView) v.findViewById(R.id.imageView_sound2);
+		mSound3 = (ImageView) v.findViewById(R.id.imageView_sound3);
+
+		mCurrentMode.setOnClickListener(this);
+		mPlay.setOnClickListener(this);
+		mBack.setOnClickListener(this);
+		mForward.setOnClickListener(this);
+		mSound1.setOnClickListener(this);
+		mSound2.setOnClickListener(this);
+		mSound3.setOnClickListener(this);
+
+		play = resources.getDrawable(R.drawable.play);
+		stop = resources.getDrawable(R.drawable.stop);
+		rock = resources.getDrawable(R.drawable.rock);
+		dj = resources.getDrawable(R.drawable.dj);
+		japan = resources.getDrawable(R.drawable.japan);
+		game = resources.getDrawable(R.drawable.game);
+		debug = resources.getDrawable(R.drawable.debug);
+	}
+
+	private void reloadModeView() {
+		// setBackground()だとAPI16からなので
+		// 最小SDKバージョンに対応出来ないので、とりあえずsetBackgroudnDrawable()で対応
+		switch (mMusicPlayer.mCurrentMode) {
+		case rock:
+			mCurrentMode.setBackgroundDrawable(rock);
+			break;
+		case dj:
+			mCurrentMode.setBackgroundDrawable(dj);
+			break;
+		case japan:
+			mCurrentMode.setBackgroundDrawable(japan);
+			break;
+		case game:
+			mCurrentMode.setBackgroundDrawable(game);
+			break;
+		case debug:
+			mCurrentMode.setBackgroundDrawable(debug);
+		default:
+			break;
+		}
+	}
+
 }

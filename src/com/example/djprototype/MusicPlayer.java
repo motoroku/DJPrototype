@@ -9,39 +9,43 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.SoundPool;
 
 public class MusicPlayer implements OnCompletionListener {
-	MediaPlayer mediaPlayer;
-	MediaPlayer directMove;
-	SoundPool soundPool;
-	SoundPool gameSound;
+	MediaPlayer	mediaPlayer;
+	MediaPlayer	directMove;
+	SoundPool	soundPool;
+	SoundPool	gameSound;
 
-	Context context;
+	Context		context;
 
-	int swingId;
-	int moveId;
-	int slideId;
-	int rhythmHighId;
-	int rhythmMiddleId;
-	int rhythmLowId;
+	int			swingId;
+	int			moveId;
+	int			slideId;
+	int			rhythmHighId;
+	int			rhythmMiddleId;
+	int			rhythmLowId;
 
-	int correctId;
-	int incorrectId;
+	int			correctId;
+	int			incorrectId;
 
 	enum Mode {
-		rock, dj, debug, japan;
+		rock, dj, debug, japan, game;
 		public Mode getNextMode(Mode mode) {
-			if (mode == Mode.rock) {
+			if (mode == rock) {
 				return Mode.dj;
-			} else if (mode == Mode.dj) {
+			} else if (mode == dj) {
 				return japan;
-			} else if (mode == Mode.japan) {
+			} else if (mode == japan) {
+				return game;
+			} else if (mode == game) {
 				return debug;
+			} else if (mode == debug) {
+				return rock;
 			} else {
 				return rock;
 			}
 		}
 	}
 
-	Mode mCurrentMode = Mode.rock;
+	Mode	mCurrentMode	= Mode.rock;
 
 	public MusicPlayer(Context context) {
 		this.context = context;
@@ -129,27 +133,34 @@ public class MusicPlayer implements OnCompletionListener {
 
 	private void setSound(Mode mode) {
 		switch (mode) {
-			case rock:
-				swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
-				moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
-				rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
-				rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
-				rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
-				break;
-			case dj:
-				swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
-				slideId = soundPool.load(context, R.raw.nc30614, 1);
-				rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
-				break;
-			case japan:
-				swingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
-				moveId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
-				rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
-				break;
-			case debug:
-				break;
-			default:
-				break;
+		case rock:
+			swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+			rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+			break;
+		case dj:
+			swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
+			slideId = soundPool.load(context, R.raw.nc30614, 1);
+			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
+			break;
+		case japan:
+			swingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
+			moveId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
+			rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
+			break;
+		case game:
+			swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+			rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+			break;
+		case debug:
+			break;
+		default:
+			break;
 		}
 		correctId = gameSound.load(context, R.raw.se_maoudamashii_onepoint15_maru, 1);
 		incorrectId = gameSound.load(context, R.raw.se_maoudamashii_onepoint14_batu, 1);

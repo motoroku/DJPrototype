@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAction {
-	boolean isUserTurn;
-	List<Move> userActionHistory = new ArrayList<Move>();
-	List<Move> correctActionList = new ArrayList<Move>();
+	boolean		isUserTurn;
+	List<Move>	userActionHistory	= new ArrayList<Move>();
+	List<Move>	correctActionList	= new ArrayList<Move>();
 
 	enum Move {
-		sideSwing, frontSlide, verticalSlide
+		sideSwing, frontSlide, verticalSlide, highTap, middleTap, lowTap
 	}
 
 	public void reset() {
