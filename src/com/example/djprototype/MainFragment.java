@@ -113,14 +113,14 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 		// TODO Auto-generated method stub
 		if (sensorRun) {
 			if (mMotionHandler.frontSlide(event)) {
-				mMusicPlayer.soundMove();
+				mMusicPlayer.soundFrontSlide();
 			}
 			if (mMotionHandler.sideSwing(event)) {
-				mMusicPlayer.soundSwing();
+				mMusicPlayer.soundSideSwing();
 			}
 			if (mMotionHandler.verticallSlide(event)) {
 				if (mMusicPlayer.mCurrentMode == Mode.dj) {
-					mMusicPlayer.soundSlide();
+					mMusicPlayer.soundVerticalSlide();
 				}
 			}
 			mMotionHandler.reloadData(event);

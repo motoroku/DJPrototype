@@ -181,16 +181,16 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		// TODO Auto-generated method stub
 		if (sensorRun) {
 			if (mMotionHandler.frontSlide(event)) {
-				mMusicPlayer.soundMove();
+				mMusicPlayer.soundFrontSlide();
 				mUserAction.addUserAction(Move.frontSlide);
 			}
 			if (mMotionHandler.sideSwing(event)) {
-				mMusicPlayer.soundSwing();
+				mMusicPlayer.soundSideSwing();
 				mUserAction.addUserAction(Move.sideSwing);
 			}
 			if (mMotionHandler.verticallSlide(event)) {
 				if (mMusicPlayer.mCurrentMode == Mode.dj) {
-					mMusicPlayer.soundSlide();
+					mMusicPlayer.soundVerticalSlide();
 					mUserAction.addUserAction(Move.verticalSlide);
 				}
 			}
@@ -259,6 +259,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 			break;
 		}
 		mUserAction.isUserTurn = false;
+		mUserAction.reset();
 	}
 
 }

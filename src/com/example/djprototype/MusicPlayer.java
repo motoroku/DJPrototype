@@ -16,9 +16,9 @@ public class MusicPlayer implements OnCompletionListener {
 
 	Context		context;
 
-	int			swingId;
-	int			moveId;
-	int			slideId;
+	int			sideSwingId;
+	int			frontSlideId;
+	int			verticalSlideId;
 	int			rhythmHighId;
 	int			rhythmMiddleId;
 	int			rhythmLowId;
@@ -93,12 +93,12 @@ public class MusicPlayer implements OnCompletionListener {
 		}
 	}
 
-	public void soundSwing() {
-		soundPool.play(swingId, 2.0f, 2.0f, 1, 0, 1.0f);
+	public void soundSideSwing() {
+		soundPool.play(sideSwingId, 2.0f, 2.0f, 1, 0, 1.0f);
 	}
 
-	public void soundMove() {
-		soundPool.play(moveId, 1.5f, 1.5f, 1, 0, 1.0f);
+	public void soundFrontSlide() {
+		soundPool.play(frontSlideId, 1.5f, 1.5f, 1, 0, 1.0f);
 	}
 
 	public void soundRhythmHigh() {
@@ -113,8 +113,8 @@ public class MusicPlayer implements OnCompletionListener {
 		soundPool.play(rhythmLowId, 1.0f, 1.0f, 1, 0, 1.0f);
 	}
 
-	public void soundSlide() {
-		soundPool.play(slideId, 1.0f, 1.0f, 1, 0, 1.0f);
+	public void soundVerticalSlide() {
+		soundPool.play(verticalSlideId, 1.0f, 1.0f, 1, 0, 1.0f);
 	}
 
 	public void soundCorrect() {
@@ -134,28 +134,16 @@ public class MusicPlayer implements OnCompletionListener {
 	private void setSound(Mode mode) {
 		switch (mode) {
 		case rock:
-			swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
-			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
-			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
-			rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
-			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+			setRockSound();
 			break;
 		case dj:
-			swingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
-			slideId = soundPool.load(context, R.raw.nc30614, 1);
-			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
+			setDjSound();
 			break;
 		case japan:
-			swingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
-			moveId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
-			rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
+			setJapanSound();
 			break;
 		case game:
-			swingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
-			moveId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
-			rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
-			rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
-			rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+			setRockSound();
 			break;
 		case debug:
 			break;
@@ -164,6 +152,30 @@ public class MusicPlayer implements OnCompletionListener {
 		}
 		correctId = gameSound.load(context, R.raw.se_maoudamashii_onepoint15_maru, 1);
 		incorrectId = gameSound.load(context, R.raw.se_maoudamashii_onepoint14_batu, 1);
+	}
+
+	private void setRockSound() {
+		sideSwingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+		frontSlideId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+		rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+		rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+		rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+	}
+
+	private void setDjSound() {
+		sideSwingId = soundPool.load(context, R.raw.ta_ge_tambourine02, 1);
+		verticalSlideId = soundPool.load(context, R.raw.nc30614, 1);
+		rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_voice_human03, 1);
+		rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+		rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+	}
+
+	private void setJapanSound() {
+		sideSwingId = soundPool.load(context, R.raw.ta_ge_kotaiko02, 1);
+		frontSlideId = soundPool.load(context, R.raw.ta_ge_ootaiko02, 1);
+		rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
+		rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+		rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
 	}
 
 	@Override
