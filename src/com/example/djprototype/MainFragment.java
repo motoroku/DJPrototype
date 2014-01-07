@@ -25,7 +25,7 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 	// Logic
 	MotionHandler			mMotionHandler;
 	MusicPlayer				mMusicPlayer;
-	UserAction 				mUserAction;
+	UserAction				mUserAction;
 	// Sensor
 	SensorManager			mSensorManager;
 	List<Sensor>			sensors;
@@ -200,7 +200,8 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			String str1 = "加速度センサー値:" + "\nX軸:" + event.values[SensorManager.DATA_X] + "\nY軸:" + event.values[SensorManager.DATA_Y] + "\nZ軸:" + event.values[SensorManager.DATA_Z];
 			accelerometerText.setText(str1);
 			// リストにセンサーの値を表示
-			acceleroAdapter.add(acceleroDataList.size() + "-X軸：" + accX + "  Y軸：" + accY + "  Z軸：" + accZ);
+			// acceleroAdapter.add(acceleroDataList.size() + "-X軸：" + accX + "  Y軸：" + accY + "  Z軸：" + accZ);
+			acceleroAdapter.add("X：" + accX + "  Y：" + accY + "  Z：" + accZ);
 			acceleroList.setSelection(acceleroDataList.size());
 		}
 		if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -208,7 +209,8 @@ public class MainFragment extends Fragment implements OnClickListener, SensorEve
 			String str2 = "ジャイロセンサー値:" + "\nX軸中心:" + event.values[SensorManager.DATA_X] + "\nY軸中心:" + event.values[SensorManager.DATA_Y] + "\nZ軸中心:" + event.values[SensorManager.DATA_Z];
 			gyroscopeText.setText(str2);
 			// リストにセンサーの値を表示
-			gyroAdapter.add(gyroDataList.size() + "-X軸：" + gyroX + "  Y軸：" + gyroY + "  Z軸：" + gyroZ);
+			// gyroAdapter.add(gyroDataList.size() + "-X軸：" + gyroX + "  Y軸：" + gyroY + "  Z軸：" + gyroZ);
+			gyroAdapter.add("X：" + gyroX + "  Y：" + gyroY + "  Z：" + gyroZ);
 			gyroList.setSelection(gyroDataList.size());
 		}
 	}
