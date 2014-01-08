@@ -29,6 +29,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	MotionHandler			mMotionHandler;
 	MusicPlayer				mMusicPlayer;
 	UserAction				mUserAction;
+	LessonStage				mLessonStage;
 	// Sensor
 	SensorManager			mSensorManager;
 	List<Sensor>			sensors;
@@ -37,6 +38,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	Button					mBack;
 	Button					mForward;
 	TextView				mCurrentMode;
+	TextView				mLessonNo;
 	ImageView				mSound1;
 	ImageView				mSound2;
 	ImageView				mSound3;
@@ -51,7 +53,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	// Variables
 	ArrayAdapter<String>	adapter;
 	boolean					sensorRun	= true;
-	int						currentTime;
+	int						currentLesson;
 	Resources				resources;
 
 	@Override
@@ -61,19 +63,17 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		Context context = getActivity();
 		// インスタンス生成
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-		mMusicPlayer = new MusicPlayer(context);
 		mMotionHandler = new MotionHandler();
 		mUserAction = new UserAction();
+		mLessonStage = new LessonStage(0); // TODO ステージ選択機能用の引数
+		mMusicPlayer = new MusicPlayer(context, mLessonStage); // 各ステージ用のMusicPlayerという感じで
 		resources = getResources();
 
-		// お試しで正解を作成
-		mUserAction.addCorrectAction(Move.sideSwing);
-		mUserAction.addCorrectAction(Move.sideSwing);
-		mUserAction.addCorrectAction(Move.frontSlide);
-
 		// Viewの設定
+		mMusicPlayer.mCurrentMode = Mode.game;
 		createView(v);
 		reloadModeView();
+		setLessonNo();
 		return v;
 	}
 
@@ -108,41 +108,26 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		int id = v.getId();
 		switch (id) {
 		case R.id.textView_currentMode:
-			mMusicPlayer.changeMode();
-			reloadModeView();
 			break;
 		case R.id.button_play_stop:
 			if (mMusicPlayer.mediaPlayer.isPlaying()) {
-				mMusicPlayer.stopMusic();
 				mPlay.setBackgroundDrawable(play);
 			} else {
-				mMusicPlayer.startMusic();
 				mPlay.setBackgroundDrawable(stop);
-				if (mMusicPlayer.mCurrentMode == Mode.game) {
-					mMusicPlayer.startLesson();
-					mUserAction.isUserTurn = true;
-				}
+				mMusicPlayer.startLesson();
+				mUserAction.isUserTurn = true;
 			}
 			break;
 		case R.id.button_back:
-			currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
-			mMusicPlayer.mediaPlayer.seekTo(currentTime - 5000);
+			currentLesson = mMusicPlayer.previousLesson(currentLesson);
+			setLessonNo();
 			break;
 		case R.id.button_foward:
-			currentTime = mMusicPlayer.mediaPlayer.getCurrentPosition();
-			mMusicPlayer.mediaPlayer.seekTo(currentTime + 5000);
+			currentLesson = mMusicPlayer.nextLesson(currentLesson);
+			setLessonNo();
 			break;
 		case R.id.imageView_sound1:
-			if (mMusicPlayer.mCurrentMode == Mode.debug) {
-				FragmentManager fm = getFragmentManager();
-				FragmentTransaction ft = fm.beginTransaction();
-				MainFragment fragment = new MainFragment();
-				ft.replace(R.id.LinearLayout2, fragment);
-				ft.addToBackStack(null);
-				ft.commit();
-			} else {
-				mMusicPlayer.soundRhythmHigh();
-			}
+			mMusicPlayer.soundRhythmHigh();
 			mUserAction.addUserAction(Move.highTap);
 			isClear();
 			break;
@@ -191,8 +176,8 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 	}
 
 	private void isClear() {
-		if (mMusicPlayer.mCurrentMode == Mode.game && mUserAction.isFinishedUserAction()) {
-			if (mUserAction.isCorrectUserAction()) {
+		if (mUserAction.isFinishedUserAction(mLessonStage.getCorrectMove(currentLesson))) {
+			if (mUserAction.isCorrectUserAction(mLessonStage.getCorrectMove(currentLesson))) {
 				mMusicPlayer.soundCorrect();
 				mUserAction.isUserTurn = false;
 			} else {
@@ -207,6 +192,7 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		mBack = (Button) v.findViewById(R.id.button_back);
 		mForward = (Button) v.findViewById(R.id.button_foward);
 		mCurrentMode = (TextView) v.findViewById(R.id.textView_currentMode);
+		mLessonNo = (TextView) v.findViewById(R.id.textView_LessonNo);
 		mSound1 = (ImageView) v.findViewById(R.id.imageView_sound1);
 		mSound2 = (ImageView) v.findViewById(R.id.imageView_sound2);
 		mSound3 = (ImageView) v.findViewById(R.id.imageView_sound3);
@@ -251,6 +237,10 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 		}
 		mUserAction.isUserTurn = false;
 		mUserAction.reset();
+	}
+
+	private void setLessonNo() {
+		mLessonNo.setText(currentLesson);
 	}
 
 }

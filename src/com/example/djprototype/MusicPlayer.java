@@ -1,18 +1,22 @@
 package com.example.djprototype;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.SoundPool;
+import android.net.Uri;
 
 public class MusicPlayer implements OnCompletionListener {
 	MediaPlayer	mediaPlayer;
 	MediaPlayer	lessonPlayer;
 	SoundPool	soundPool;
 	SoundPool	gameSound;
+	LessonStage	mLessonStage;
 
 	Context		context;
 
@@ -25,6 +29,8 @@ public class MusicPlayer implements OnCompletionListener {
 
 	int			correctId;
 	int			incorrectId;
+
+	int			maxLessonSize;
 
 	enum Mode {
 		rock, dj, debug, japan, game;
@@ -54,6 +60,21 @@ public class MusicPlayer implements OnCompletionListener {
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		gameSound = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
+
+		mediaPlayer.setOnCompletionListener(this);
+		lessonPlayer.setOnCompletionListener(this);
+	}
+
+	public MusicPlayer(Context context, LessonStage stage) {
+		this.context = context;
+		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
+		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		gameSound = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		mLessonStage = stage;
+		setSound(mCurrentMode);
+
+		maxLessonSize = mLessonStage.maxLessonSize;
+		lessonPlayer = MediaPlayer.create(context, mLessonStage.getLesson(0));
 
 		mediaPlayer.setOnCompletionListener(this);
 		lessonPlayer.setOnCompletionListener(this);
@@ -91,6 +112,25 @@ public class MusicPlayer implements OnCompletionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public int nextLesson(int currentLesson) {
+		int next = currentLesson + 1;
+		if (maxLessonSize > next && mLessonStage != null) {
+			stopLesson();
+			currentLesson = next;
+			lessonPlayer = MediaPlayer.create(context, mLessonStage.getLesson(currentLesson));
+		}
+		return currentLesson;
+	}
+
+	public int previousLesson(int currentLesson) {
+		int previous = currentLesson - 1;
+		if (previous >= 0 && mLessonStage != null) {
+			currentLesson = previous;
+			lessonPlayer = MediaPlayer.create(context, mLessonStage.getLesson(currentLesson));
+		}
+		return currentLesson;
 	}
 
 	public void soundSideSwing() {
@@ -143,7 +183,7 @@ public class MusicPlayer implements OnCompletionListener {
 			setJapanSound();
 			break;
 		case game:
-			setRockSound();
+			setGameSound();
 			break;
 		case debug:
 			break;
@@ -176,6 +216,16 @@ public class MusicPlayer implements OnCompletionListener {
 		rhythmHighId = soundPool.load(context, R.raw.clappers01, 1);
 		rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
 		rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+	}
+
+	private void setGameSound() {
+		sideSwingId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_bassdrum, 1);
+		frontSlideId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_cymbal, 1);
+		rhythmHighId = soundPool.load(context, R.raw.se_maoudamashii_instruments_drum2_hat, 1);
+		rhythmMiddleId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass11, 1);
+		rhythmLowId = soundPool.load(context, R.raw.se_maoudamashii_instruments_bass13, 1);
+
+		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
 	}
 
 	@Override

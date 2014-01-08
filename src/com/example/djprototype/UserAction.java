@@ -6,7 +6,7 @@ import java.util.List;
 public class UserAction {
 	boolean		isUserTurn;
 	List<Move>	userActionHistory	= new ArrayList<Move>();
-	List<Move>	correctActionList	= new ArrayList<Move>();
+	LessonStage	mLessonStage;
 
 	enum Move {
 		sideSwing, frontSlide, verticalSlide, highTap, middleTap, lowTap
@@ -26,13 +26,9 @@ public class UserAction {
 		}
 	}
 
-	public void addCorrectAction(Move move) {
-		correctActionList.add(move);
-	}
-
-	public boolean isFinishedUserAction() {
+	public boolean isFinishedUserAction(List<Move> correctMove) {
 		if (isUserTurn) {
-			int correctSize = correctActionList.size();
+			int correctSize = correctMove.size();
 			int userActionSize = userActionHistory.size();
 			return userActionSize >= correctSize;
 		} else {
@@ -41,14 +37,14 @@ public class UserAction {
 
 	}
 
-	public boolean isCorrectUserAction() {
-		int correctSize = correctActionList.size();
+	public boolean isCorrectUserAction(List<Move> correctMove) {
+		int correctSize = correctMove.size();
 		int userActionSize = userActionHistory.size();
 		if (correctSize > userActionSize) {
 			return false;
 		}
 		for (int i = 0; i < correctSize; i++) {
-			if (userActionHistory.get(i) != correctActionList.get(i)) {
+			if (userActionHistory.get(i) != correctMove.get(i)) {
 				return false;
 			}
 		}
