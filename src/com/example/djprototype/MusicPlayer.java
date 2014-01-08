@@ -10,7 +10,7 @@ import android.media.SoundPool;
 
 public class MusicPlayer implements OnCompletionListener {
 	MediaPlayer	mediaPlayer;
-	MediaPlayer	directMove;
+	MediaPlayer	lessonPlayer;
 	SoundPool	soundPool;
 	SoundPool	gameSound;
 
@@ -50,13 +50,13 @@ public class MusicPlayer implements OnCompletionListener {
 	public MusicPlayer(Context context) {
 		this.context = context;
 		mediaPlayer = MediaPlayer.create(context, R.raw.bgm_maoudamashii_acoustic04);
-		directMove = MediaPlayer.create(context, R.raw.lesson1);
+		lessonPlayer = MediaPlayer.create(context, R.raw.lesson1);
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		gameSound = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		setSound(mCurrentMode);
 
 		mediaPlayer.setOnCompletionListener(this);
-		directMove.setOnCompletionListener(this);
+		lessonPlayer.setOnCompletionListener(this);
 	}
 
 	public void startMusic() {
@@ -76,14 +76,14 @@ public class MusicPlayer implements OnCompletionListener {
 		}
 	}
 
-	public void startDirection() {
-		directMove.start();
+	public void startLesson() {
+		lessonPlayer.start();
 	}
 
-	public void stopDirection() {
-		directMove.stop();
+	public void stopLesson() {
+		lessonPlayer.stop();
 		try {
-			directMove.prepare();
+			lessonPlayer.prepare();
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

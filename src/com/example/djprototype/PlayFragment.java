@@ -112,24 +112,15 @@ public class PlayFragment extends Fragment implements OnClickListener, SensorEve
 			reloadModeView();
 			break;
 		case R.id.button_play_stop:
-			if (mMusicPlayer.mCurrentMode == Mode.game) {
-				if (mMusicPlayer.mediaPlayer.isPlaying()) {
-					mMusicPlayer.stopMusic();
-					mPlay.setBackgroundDrawable(play);
-				}
-				if (mMusicPlayer.directMove.isPlaying()) {
-					mMusicPlayer.stopDirection();
-				} else {
-					mMusicPlayer.startDirection();
-					mUserAction.isUserTurn = true;
-				}
+			if (mMusicPlayer.mediaPlayer.isPlaying()) {
+				mMusicPlayer.stopMusic();
+				mPlay.setBackgroundDrawable(play);
 			} else {
-				if (mMusicPlayer.mediaPlayer.isPlaying()) {
-					mMusicPlayer.stopMusic();
-					mPlay.setBackgroundDrawable(play);
-				} else {
-					mMusicPlayer.startMusic();
-					mPlay.setBackgroundDrawable(stop);
+				mMusicPlayer.startMusic();
+				mPlay.setBackgroundDrawable(stop);
+				if (mMusicPlayer.mCurrentMode == Mode.game) {
+					mMusicPlayer.startLesson();
+					mUserAction.isUserTurn = true;
 				}
 			}
 			break;
